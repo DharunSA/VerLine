@@ -28,18 +28,66 @@ function parseNLFallback(
   text: string,
   existingPeople: { id: string; name: string }[]
 ): NLExtractionResult | null {
-  // Pattern: "[NewPerson] is [ExistingPerson]'s [relationship]"
-  const match = text.match(/^(.+?)\s+is\s+(.+?)'s?\s+(.+)$/i);
-  if (!match) return null;
+  const cleanText = text.trim();
+  let newPersonName = '';
+  let anchorName = '';
+  let relWord = '';
 
-  const [, newPersonRaw, anchorNameRaw, relWord] = match;
-  const newPersonName = newPersonRaw.trim();
-  const anchorName = anchorNameRaw.trim();
+  // Format 1: "Dharun is the son of Ananya Menon" or "Add Dharun as son of Ananya"
+  const matchOf = cleanText.match(/^(?:add\s+)?(.+?)\s+(?:is|was|as)\s+(?:the\s+)?(.+?)\s+of\s+(.+)$/i);
+
+  // Format 2: "Dharun is Ananya Menon's son"
+  const matchPossessive = cleanText.match(/^(?:add\s+)?(.+?)\s+(?:is|was|as)\s+(.+?)'s?\s+(.+)$/i);
+
+  // Format 3: "Dharun is married to Ananya Menon"
+  const matchMarried = cleanText.match(/^(?:add\s+)?(.+?)\s+(?:is\s+)?married\s+to\s+(.+)$/i);
+
+  // Format 4: "Dharun, son of Ananya"
+  const matchComma = cleanText.match(/^(.+?),\s*(?:the\s+)?(?:(.+?)\s+of\s+(.+)|(.+?)'s?\s+(.+))$/i);
+
+  if (matchOf) {
+    newPersonName = matchOf[1].trim();
+    relWord = matchOf[2].trim();
+    anchorName = matchOf[3].trim();
+  } else if (matchPossessive) {
+    newPersonName = matchPossessive[1].trim();
+    anchorName = matchPossessive[2].trim();
+    relWord = matchPossessive[3].trim();
+  } else if (matchMarried) {
+    newPersonName = matchMarried[1].trim();
+    anchorName = matchMarried[2].trim();
+    relWord = 'spouse';
+  } else if (matchComma) {
+    newPersonName = matchComma[1].trim();
+    if (matchComma[2] && matchComma[3]) {
+      relWord = matchComma[2].trim();
+      anchorName = matchComma[3].trim();
+    } else if (matchComma[4] && matchComma[5]) {
+      anchorName = matchComma[4].trim();
+      relWord = matchComma[5].trim();
+    }
+  } else {
+    // Basic fallback: check if any existing person's name is mentioned in text
+    const foundPerson = existingPeople.find(p =>
+      cleanText.toLowerCase().includes(p.name.toLowerCase()) ||
+      cleanText.toLowerCase().includes(p.name.split(' ')[0].toLowerCase())
+    );
+    if (foundPerson) {
+      anchorName = foundPerson.name;
+      // Extract the first word before 'is' or 'as' as new person's name
+      const nameMatch = cleanText.match(/^([A-Za-z\s]+?)\s+(?:is|was|as)/i);
+      newPersonName = nameMatch ? nameMatch[1].trim() : 'New Member';
+      relWord = cleanText;
+    } else {
+      return null;
+    }
+  }
 
   // Fuzzy-match anchor name against existing people
   const anchorMatch = existingPeople.find(p =>
     p.name.toLowerCase().includes(anchorName.toLowerCase()) ||
-    anchorName.toLowerCase().includes(p.name.toLowerCase().split(' ')[0])
+    anchorName.toLowerCase().includes(p.name.toLowerCase()) ||
+    p.name.toLowerCase().split(' ')[0] === anchorName.toLowerCase().split(' ')[0]
   );
 
   let relationshipType: NLExtractionResult['relationshipType'] = 'CHILD_OF';
@@ -51,10 +99,10 @@ function parseNLFallback(
   }
 
   return {
-    newPersonName,
+    newPersonName: newPersonName || 'New Member',
     anchorPersonId: anchorMatch?.id ?? null,
     relationshipType,
-    confidence: anchorMatch ? 0.7 : 0.4,
+    confidence: anchorMatch ? 0.8 : 0.4,
   };
 }
 

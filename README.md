@@ -1,50 +1,61 @@
-# React + TypeScript + Vite
+# 🌳 VerLine — Your Roots, in One Line.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> An interactive, AI-enhanced living family tree visualization platform with real-time graph layout, dual-LLM natural language parsing, and hybrid drag-and-drop linking.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- **🌳 Interactive Graph Canvas**: Powered by React Flow and Dagre topological layout engine. Enforces strict generation row alignment with birth-year fallbacks.
+- **✨ Dual Live AI Engine**:
+  - **Primary LLM**: **Google Gemini Flash** (via Google AI Studio) for deep language understanding of complex, messy real-world family sentences.
+  - **Fast Path / Fallback LLM**: **Groq** (Llama 3.1 8B Instant) for sub-second fast-path extraction and fallback.
+  - **Offline Regex Engine**: Built-in client parser ensures 100% offline uptime.
+- **🔗 Hybrid Drag-and-Drop Line Linker**: Click and drag connection lines handle-to-handle directly on the canvas to link parents, children, spouses, or siblings.
+- **💓 Clean Side-to-Side Marriage Edges**: Marriage lines connect side-to-side at mid-card height with a centered floating heart badge (`♡`), preventing line collision with vertical parent arrows.
+- **📖 AI Family Story Generator**: Generates warm, heirloom-style multi-generational family biographies.
+- **🔍 Fuzzy Search & Closeness Ranking**: Instant search by name, profession, or location, with degree-of-kinship calculated automatically via BFS graph pathfinding.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+## 🚀 Quick Start
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### 1. Installation
+```bash
+git clone https://github.com/DharunSA/VerLine.git
+cd VerLine
+npm install
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### 2. Live AI Configuration (Optional)
+Copy `.env.local.example` to `.env.local` and add your API keys:
+```env
+# Google Gemini Flash (Primary LLM)
+VITE_GEMINI_API_KEY=AIzaSy...
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+# Groq (Fast Path / Fallback LLM)
+VITE_GROQ_API_KEY=gsk_...
 ```
+
+### 3. Run Locally
+```bash
+npm run dev
+```
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+---
+
+## 🧪 Testing & Build
+
+```bash
+# Run unit test suite
+npm run test
+
+# Type check & build production bundle
+npm run build
+```
+
+---
+
+## 📜 License
+MIT License. Built with ❤️ for family history preservation.

@@ -51,6 +51,7 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
   // Hybrid Manual Connection State (Drag-and-Drop Handle Linking)
   const [pendingConnection, setPendingConnection] = useState<{ sourceId: string; targetId: string } | null>(null);
   const [selectedRelType, setSelectedRelType] = useState<'PARENT' | 'CHILD' | 'SPOUSE' | 'SIBLING'>('CHILD');
+  const [showLegend, setShowLegend] = useState(true);
 
   const { nodes: layoutNodes, edges: layoutEdges, generationBands } = useAutoLayout(
     people,
@@ -420,41 +421,44 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
         </button>
       </div>
 
-      {/* Keyboard shortcuts hint */}
+      {/* Keyboard shortcuts & drag hint */}
       <div
         style={{
           position: 'absolute',
-          bottom: 80,
-          left: 16,
-          fontSize: 10,
-          color: 'var(--text-muted)',
-          background: 'rgba(250,247,242,0.85)',
-          borderRadius: 'var(--radius-sm)',
-          padding: '4px 8px',
+          bottom: 24,
+          left: 24,
+          fontSize: 11,
+          fontWeight: 500,
+          color: 'var(--text-secondary)',
+          background: 'rgba(255, 255, 255, 0.88)',
+          borderRadius: 100,
+          padding: '6px 14px',
           zIndex: 10,
-          backdropFilter: 'blur(4px)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid var(--surface-2)',
+          boxShadow: 'var(--shadow-sm)',
           display: 'flex',
           alignItems: 'center',
-          gap: 6,
+          gap: 8,
         }}
       >
-        <span>💡 Drag a line between any 2 cards to connect them!</span>
-        &nbsp;·&nbsp;
-        <kbd style={{ fontFamily: 'monospace' }}>F</kbd> fit view &nbsp;·&nbsp;
-        <kbd style={{ fontFamily: 'monospace' }}>+</kbd>/<kbd style={{ fontFamily: 'monospace' }}>-</kbd> zoom &nbsp;·&nbsp;
-        <kbd style={{ fontFamily: 'monospace' }}>Esc</kbd> close
+        <span>💡 Drag a line between handles to link cards</span>
+        <span style={{ opacity: 0.3 }}>|</span>
+        <span><kbd style={{ fontFamily: 'monospace', fontWeight: 600 }}>F</kbd> fit view</span>
+        <span style={{ opacity: 0.3 }}>|</span>
+        <span><kbd style={{ fontFamily: 'monospace', fontWeight: 600 }}>+</kbd>/<kbd style={{ fontFamily: 'monospace', fontWeight: 600 }}>-</kbd> zoom</span>
       </div>
 
-      {/* Legend */}
+      {/* Legend Panel */}
       <div
         style={{
           position: 'absolute',
           top: 16,
           right: 16,
-          background: 'white',
+          background: 'rgba(255, 255, 255, 0.92)',
           borderRadius: 'var(--radius-md)',
           border: '1px solid var(--surface-2)',
-          padding: '10px 14px',
+          padding: showLegend ? '10px 14px' : '6px 10px',
           fontSize: 11,
           color: 'var(--text-secondary)',
           display: 'flex',
@@ -462,18 +466,37 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
           gap: 6,
           boxShadow: 'var(--shadow-sm)',
           zIndex: 10,
+          backdropFilter: 'blur(8px)',
+          transition: 'all 200ms ease',
         }}
       >
-        {[
-          { label: 'Blood relation', style: { borderBottom: '2px solid var(--color-warm-gray)' } },
-          { label: 'Marriage', style: { borderBottom: '2px dashed var(--color-accent-light)' } },
-          { label: 'Adopted / Step', style: { borderBottom: '2px dotted var(--color-warm-gray)' } },
-        ].map(({ label, style }) => (
-          <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{ width: 24, ...style }} />
-            <span>{label}</span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <span style={{ fontWeight: 600, fontSize: 11, color: 'var(--text-primary)' }}>Legend</span>
+          <button
+            onClick={() => setShowLegend(!showLegend)}
+            style={{
+              border: 'none', background: 'none', cursor: 'pointer', fontSize: 10,
+              color: 'var(--text-muted)', padding: 0, textDecoration: 'underline',
+            }}
+          >
+            {showLegend ? 'Hide' : 'Show'}
+          </button>
+        </div>
+
+        {showLegend && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
+            {[
+              { label: 'Blood relation', style: { borderBottom: '2px solid var(--color-warm-gray)' } },
+              { label: 'Marriage', style: { borderBottom: '2px dashed var(--color-accent-light)' } },
+              { label: 'Adopted / Step', style: { borderBottom: '2px dotted var(--color-warm-gray)' } },
+            ].map(({ label, style }) => (
+              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ width: 24, ...style }} />
+                <span>{label}</span>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
 
       {/* Empty state */}

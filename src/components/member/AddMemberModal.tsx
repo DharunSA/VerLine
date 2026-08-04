@@ -101,6 +101,7 @@ export default function AddMemberModal() {
       }
       if (nlResult.extractedAttributes?.profession) setValue('profession', nlResult.extractedAttributes.profession);
       if (nlResult.extractedAttributes?.location) setValue('location', nlResult.extractedAttributes.location);
+      if (nlResult.extractedAttributes?.dob) setValue('dob', nlResult.extractedAttributes.dob);
       if (nlResult.anchorPersonId) {
         const relTypeMap: Record<string, RelationInput['type']> = {
           PARENT_OF: 'PARENT',

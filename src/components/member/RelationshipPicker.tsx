@@ -21,10 +21,20 @@ export default function RelationshipPicker({ value, onChange }: RelationshipPick
 
   const filteredPeople = useMemo(() => {
     const all = Object.values(people);
-    if (!personSearch) return all.slice(0, 8);
-    const q = personSearch.toLowerCase();
-    return all.filter(p => p.name.toLowerCase().includes(q)).slice(0, 8);
-  }, [people, personSearch]);
+    let list = all;
+    if (personSearch) {
+      const q = personSearch.toLowerCase();
+      list = all.filter(p => p.name.toLowerCase().includes(q));
+    }
+    // Ensure pre-selected anchor person (e.g. from NL input) is pinned to the top
+    if (value?.anchorPersonId) {
+      const anchor = people[value.anchorPersonId];
+      if (anchor) {
+        list = [anchor, ...list.filter(p => p.id !== anchor.id)];
+      }
+    }
+    return list.slice(0, 8);
+  }, [people, personSearch, value?.anchorPersonId]);
 
   const selectedAnchor = value?.anchorPersonId ? people[value.anchorPersonId] : null;
 

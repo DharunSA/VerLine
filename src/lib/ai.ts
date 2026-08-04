@@ -1,9 +1,16 @@
 /**
- * AI client — all Claude calls route through a Supabase Edge Function.
- * The Anthropic API key is never exposed to the browser.
+ * AI Client for Verline
+ *
+ * Supports Dual Live Production AI Configuration:
+ * 1. Primary LLM: Google Gemini Flash (Google AI Studio)
+ *    - Best overall language understanding for complex/messy real-world sentences.
+ * 2. Fast Path / Fallback LLM: Groq (Llama 3.1 8B Instant)
+ *    - Sub-second responses for simple queries or when Gemini Flash is rate-limited.
+ * 3. Client-side Regex Engine: Offline safety fallback.
  */
 
 import { supabase } from './supabaseClient';
+import { extractRelationshipMultiProvider, getGeminiKey, getGroqKey } from './aiProviders';
 
 export interface NLExtractionResult {
   newPersonName: string;
@@ -16,6 +23,7 @@ export interface NLExtractionResult {
     gender?: string;
   };
   confidence: number;
+  provider?: 'gemini' | 'groq' | 'edge-proxy' | 'fallback';
 }
 
 export interface NarratorResult {
@@ -31,7 +39,7 @@ export interface StoryResult {
 const storyCache = new Map<string, StoryResult>();
 
 /**
- * Call the AI proxy Edge Function.
+ * Call the AI proxy Edge Function if set up.
  */
 async function callAIProxy<T>(
   action: string,
@@ -46,16 +54,38 @@ async function callAIProxy<T>(
 }
 
 /**
- * Extract structured relationship data from a natural-language sentence.
+ * Extract structured relationship data using live AI providers:
+ * 1. Direct client call (if VITE_GEMINI_API_KEY or VITE_GROQ_API_KEY set)
+ * 2. Supabase Edge Function call (if Edge Function secrets configured)
  */
 export async function extractRelationshipFromNL(
   text: string,
-  existingPeople: { id: string; name: string }[]
+  existingPeople: { id: string; name: string; dob?: string; profession?: string; location?: string }[],
+  preferFastPath = false
 ): Promise<NLExtractionResult> {
-  return callAIProxy<NLExtractionResult>('extract_relationship', {
-    text,
-    existingPeople,
-  });
+  const hasClientKeys = Boolean(getGeminiKey() || getGroqKey());
+
+  if (hasClientKeys) {
+    try {
+      const { result, provider } = await extractRelationshipMultiProvider(text, existingPeople, preferFastPath);
+      return { ...result, provider };
+    } catch (err) {
+      console.warn('Client multi-provider AI failed, trying Edge Function proxy:', err);
+    }
+  }
+
+  // Try Edge Function proxy
+  try {
+    const res = await callAIProxy<NLExtractionResult>('extract_relationship', {
+      text,
+      existingPeople,
+      preferFastPath,
+    });
+    return { ...res, provider: 'edge-proxy' };
+  } catch (err) {
+    console.warn('Edge Function proxy unavailable:', err);
+    throw err;
+  }
 }
 
 /**
@@ -67,12 +97,16 @@ export async function narrateRelationship(
   label: string,
   pathSummary: string
 ): Promise<NarratorResult> {
-  return callAIProxy<NarratorResult>('narrate_relationship', {
-    fromName,
-    toName,
-    label,
-    pathSummary,
-  });
+  try {
+    return await callAIProxy<NarratorResult>('narrate_relationship', {
+      fromName,
+      toName,
+      label,
+      pathSummary,
+    });
+  } catch {
+    return { sentence: `${toName} is your ${label.toLowerCase()}.` };
+  }
 }
 
 /**
@@ -88,8 +122,12 @@ export async function generateFamilyStory(
     return cached;
   }
 
-  const result = await callAIProxy<StoryResult>('generate_story', { people });
-  const withTimestamp = { ...result, cachedAt: Date.now() };
-  storyCache.set(cacheKey, withTimestamp);
-  return withTimestamp;
+  try {
+    const result = await callAIProxy<StoryResult>('generate_story', { people });
+    const withTimestamp = { ...result, cachedAt: Date.now() };
+    storyCache.set(cacheKey, withTimestamp);
+    return withTimestamp;
+  } catch (err) {
+    throw err;
+  }
 }

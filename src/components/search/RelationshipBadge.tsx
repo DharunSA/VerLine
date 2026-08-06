@@ -23,7 +23,7 @@ export default function RelationshipBadge({
       className={`rel-badge ${isDirectFamily || isSpouse ? 'rel-badge-direct' : 'rel-badge-extended'}`}
       style={{
         fontSize: compact ? 10 : 11,
-        padding: compact ? '1px 8px' : '2px 10px',
+        padding: compact ? '2px 8px' : '3px 10px',
       }}
     >
       {isSelf ? (
@@ -33,7 +33,7 @@ export default function RelationshipBadge({
       ) : (
         <>
           {!compact && (
-            <span style={{ opacity: 0.7, marginRight: 4 }}>{degreeLabel} ·</span>
+            <span style={{ opacity: 0.8, marginRight: 4 }}>{degreeLabel} ·</span>
           )}
           {label}
         </>

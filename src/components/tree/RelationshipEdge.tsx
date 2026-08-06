@@ -10,22 +10,22 @@ interface RelEdgeData {
 
 const EDGE_STYLES: Record<EdgeType, React.CSSProperties> = {
   blood: {
-    stroke: '#7A6C60',
+    stroke: '#8C7E70',
     strokeWidth: 2,
     strokeDasharray: 'none',
   },
   marriage: {
-    stroke: '#C2672A',
+    stroke: '#E5A93C',
     strokeWidth: 2,
     strokeDasharray: '5 3',
   },
   adopted: {
-    stroke: '#7A6C60',
+    stroke: '#5E8B7A',
     strokeWidth: 2,
     strokeDasharray: '2 4',
   },
   divorced: {
-    stroke: '#B0A090',
+    stroke: '#64748B',
     strokeWidth: 2,
     strokeDasharray: '4 4',
   },
@@ -73,14 +73,14 @@ const RelationshipEdge = memo(
                 position: 'absolute',
                 transform: `translate(-50%, -50%) translate(${(sourceX + targetX) / 2}px, ${(sourceY + targetY) / 2}px)`,
                 pointerEvents: 'none',
-                fontSize: 10,
-                color: '#C2672A',
-                fontWeight: 600,
-                background: 'white',
-                padding: '2px 7px',
+                fontSize: 11,
+                color: 'var(--color-amber-glow)',
+                fontWeight: 700,
+                background: 'var(--surface-0)',
+                padding: '2px 8px',
                 borderRadius: 100,
-                border: '1.5px solid #C2672A',
-                boxShadow: '0 2px 4px rgba(44,36,32,0.1)',
+                border: '1.5px solid var(--color-amber-glow)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4), 0 0 10px rgba(229, 169, 60, 0.3)',
                 zIndex: 10,
               }}
             >

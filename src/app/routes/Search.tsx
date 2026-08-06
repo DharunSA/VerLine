@@ -74,7 +74,6 @@ export default function Search() {
 
   const handleResultClick = (personId: string) => {
     selectPerson(personId);
-    // Navigate to tree, focus on person node, open drawer
     navigate('/tree');
     setTimeout(() => {
       focusPerson(personId);
@@ -83,17 +82,22 @@ export default function Search() {
   };
 
   return (
-    <div style={{ height: '100%', overflowY: 'auto', padding: '28px 32px', maxWidth: 780 }}>
-      <h1 className="font-serif" style={{ fontSize: 30, margin: '0 0 20px' }}>
-        Search Family
-      </h1>
+    <div style={{ height: '100%', overflowY: 'auto', padding: '36px 40px', maxWidth: 840 }}>
+      <div style={{ marginBottom: 24 }}>
+        <h1 className="font-serif" style={{ fontSize: 34, fontWeight: 700, margin: '0 0 6px', color: 'var(--color-cream)' }}>
+          Search & Kinship Directory
+        </h1>
+        <p style={{ color: 'var(--color-warm-gray)', fontSize: 14, margin: 0 }}>
+          Find family members, trace lineage paths, and filter by degree of kinship.
+        </p>
+      </div>
 
       <SearchBar placeholder="Search by name, profession, location…" onQuery={setQuery} autoFocus />
 
       {/* Filters */}
-      <div style={{ display: 'flex', gap: 12, marginTop: 16, marginBottom: 24, flexWrap: 'wrap', alignItems: 'center' }}>
-        <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-muted)' }}>
-          <Filter size={14} /> Filters:
+      <div style={{ display: 'flex', gap: 12, marginTop: 20, marginBottom: 28, flexWrap: 'wrap', alignItems: 'center' }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-muted)', fontWeight: 500 }}>
+          <Filter size={14} color="var(--color-amber-glow)" /> Filters:
         </span>
 
         {[
@@ -105,14 +109,15 @@ export default function Search() {
             key={f.val}
             onClick={() => setFilterLiving(f.val)}
             style={{
-              padding: '4px 12px',
+              padding: '5px 14px',
               borderRadius: 100,
-              border: `1.5px solid ${filterLiving === f.val ? 'var(--color-accent)' : 'var(--surface-2)'}`,
-              background: filterLiving === f.val ? 'rgba(194,103,42,0.1)' : 'white',
-              color: filterLiving === f.val ? 'var(--color-accent)' : 'var(--text-secondary)',
+              border: `1.5px solid ${filterLiving === f.val ? 'var(--color-amber-glow)' : 'var(--surface-2)'}`,
+              background: filterLiving === f.val ? 'rgba(229, 169, 60, 0.16)' : 'var(--surface-1)',
+              color: filterLiving === f.val ? 'var(--color-amber-glow)' : 'var(--color-warm-gray)',
               fontSize: 12,
-              fontWeight: 500,
+              fontWeight: 600,
               cursor: 'pointer',
+              transition: 'all 150ms',
             }}
           >
             {f.label}
@@ -120,13 +125,19 @@ export default function Search() {
         ))}
 
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <SortAsc size={14} color="var(--text-muted)" />
+          <SortAsc size={14} color="var(--color-amber-glow)" />
           <select
             value={sortMode}
             onChange={e => setSortMode(e.target.value as SortMode)}
             style={{
-              border: '1px solid var(--surface-2)', borderRadius: 6, padding: '4px 8px',
-              fontSize: 12, background: 'white', color: 'var(--text-primary)', cursor: 'pointer',
+              border: '1px solid var(--surface-2)',
+              borderRadius: 'var(--radius-sm)',
+              padding: '6px 12px',
+              fontSize: 13,
+              background: 'var(--surface-1)',
+              color: 'var(--color-cream)',
+              cursor: 'pointer',
+              outline: 'none',
             }}
           >
             <option value="relevance">Sort: Relevance</option>
@@ -138,13 +149,13 @@ export default function Search() {
 
       {/* Results count */}
       {query && (
-        <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 12 }}>
+        <p style={{ fontSize: 13, color: 'var(--color-warm-gray)', marginBottom: 16 }}>
           {results.length} result{results.length !== 1 ? 's' : ''} for "{query}" — click to view in family tree
         </p>
       )}
 
-      {/* Results */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {/* Results list */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {results.map(({ person, relationship }) => (
           <SearchResultCard
             key={person.id}
@@ -155,8 +166,8 @@ export default function Search() {
         ))}
         {results.length === 0 && (
           <div className="empty-state">
-            <div style={{ fontSize: 48 }}>🔍</div>
-            <p style={{ color: 'var(--text-muted)', fontSize: 14 }}>
+            <div style={{ fontSize: 52 }}>🔍</div>
+            <p style={{ color: 'var(--color-warm-gray)', fontSize: 15 }}>
               {query ? `No results for "${query}"` : 'Start typing to search your family members'}
             </p>
           </div>

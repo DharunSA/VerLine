@@ -5,14 +5,7 @@ import { useAIStore } from '../../stores/aiStore';
 import { useUIStore } from '../../stores/uiStore';
 import { usePeopleStore } from '../../stores/peopleStore';
 import { extractRelationshipFromNL, type NLExtractionResult } from '../../lib/ai';
-import type { MemberFormValues } from '../member/AddMemberModal';
 
-// ─── Client-side regex fallback ────────────────────────────────────────────────
-// Handles patterns like:
-//  "Raj is Meena's father"  → Raj PARENT_OF Meena
-//  "Priya is Arjun's wife"  → Priya SPOUSE_OF Arjun
-//  "Rohan is Sunita's son"  → Rohan CHILD_OF Sunita
-//  "Kavya is Aditya's sister" → Kavya SIBLING_OF Aditya
 const RELATIONSHIP_PATTERNS: Array<{ regex: RegExp; type: NLExtractionResult['relationshipType'] }> = [
   { regex: /\b(father|dad|papa|grandfather|granddad|grandpa)\b/i, type: 'PARENT_OF' },
   { regex: /\b(mother|mom|mama|grandmother|grandma|nani|nana)\b/i, type: 'PARENT_OF' },
@@ -33,16 +26,9 @@ function parseNLFallback(
   let anchorName = '';
   let relWord = '';
 
-  // Format 1: "Dharun is the son of Ananya Menon" or "Add Dharun as son of Ananya"
   const matchOf = cleanText.match(/^(?:add\s+)?(.+?)\s+(?:is|was|as)\s+(?:the\s+)?(.+?)\s+of\s+(.+)$/i);
-
-  // Format 2: "Dharun is Ananya Menon's son"
   const matchPossessive = cleanText.match(/^(?:add\s+)?(.+?)\s+(?:is|was|as)\s+(.+?)'s?\s+(.+)$/i);
-
-  // Format 3: "Dharun is married to Ananya Menon"
   const matchMarried = cleanText.match(/^(?:add\s+)?(.+?)\s+(?:is\s+)?married\s+to\s+(.+)$/i);
-
-  // Format 4: "Dharun, son of Ananya"
   const matchComma = cleanText.match(/^(.+?),\s*(?:the\s+)?(?:(.+?)\s+of\s+(.+)|(.+?)'s?\s+(.+))$/i);
 
   if (matchOf) {
@@ -67,14 +53,12 @@ function parseNLFallback(
       relWord = matchComma[5].trim();
     }
   } else {
-    // Basic fallback: check if any existing person's name is mentioned in text
     const foundPerson = existingPeople.find(p =>
       cleanText.toLowerCase().includes(p.name.toLowerCase()) ||
       cleanText.toLowerCase().includes(p.name.split(' ')[0].toLowerCase())
     );
     if (foundPerson) {
       anchorName = foundPerson.name;
-      // Extract the first word before 'is' or 'as' as new person's name
       const nameMatch = cleanText.match(/^([A-Za-z\s]+?)\s+(?:is|was|as)/i);
       newPersonName = nameMatch ? nameMatch[1].trim() : 'New Member';
       relWord = cleanText;
@@ -83,7 +67,6 @@ function parseNLFallback(
     }
   }
 
-  // Fuzzy-match anchor name against existing people
   const anchorMatch = existingPeople.find(p =>
     p.name.toLowerCase().includes(anchorName.toLowerCase()) ||
     anchorName.toLowerCase().includes(p.name.toLowerCase()) ||
@@ -128,7 +111,6 @@ export default function NLAddMemberBar() {
       try {
         result = await extractRelationshipFromNL(text, existingPeople);
       } catch {
-        // AI unavailable — use client-side fallback
         const fallback = parseNLFallback(text, existingPeople);
         if (fallback) {
           result = fallback;
@@ -138,7 +120,6 @@ export default function NLAddMemberBar() {
         }
       }
 
-      // If AI returned null anchorPersonId, fuzzy-match by name
       if (!result.anchorPersonId) {
         const nameHint = result.newPersonName;
         const anchorMatch = existingPeople.find(p =>
@@ -162,12 +143,25 @@ export default function NLAddMemberBar() {
 
   return (
     <div className="nl-bar" style={{ width: '100%', position: 'relative' }}>
-      <Sparkles size={16} color="var(--color-accent)" style={{ flexShrink: 0 }} />
+      <div
+        style={{
+          width: 28,
+          height: 28,
+          borderRadius: 8,
+          background: 'rgba(229, 169, 60, 0.18)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}
+      >
+        <Sparkles size={15} color="var(--color-amber-glow)" />
+      </div>
       <input
         value={text}
         onChange={e => setText(e.target.value)}
         onKeyDown={e => e.key === 'Enter' && !nlLoading && handleSubmit()}
-        placeholder="Add in natural language… e.g. 'Raj is Meena's son'"
+        placeholder="Add via AI… e.g. 'Raj is Meena's son, doctor born 1955'"
         style={{
           flex: 1,
           border: 'none',
@@ -196,10 +190,10 @@ export default function NLAddMemberBar() {
         onClick={handleSubmit}
         disabled={nlLoading || !text.trim()}
         style={{
-          height: 36,
-          paddingInline: 16,
+          height: 38,
+          paddingInline: 18,
           background: text.trim() ? 'var(--color-accent)' : 'var(--surface-2)',
-          color: text.trim() ? 'white' : 'var(--text-muted)',
+          color: text.trim() ? '#12161A' : 'var(--text-muted)',
           border: 'none',
           borderRadius: 'var(--radius-md)',
           cursor: text.trim() ? 'pointer' : 'default',
@@ -210,10 +204,11 @@ export default function NLAddMemberBar() {
           fontSize: 13,
           transition: 'all 200ms',
           flexShrink: 0,
+          boxShadow: text.trim() ? '0 0 15px rgba(229, 169, 60, 0.35)' : 'none',
         }}
       >
-        {nlLoading ? <span className="spinner" style={{ borderTopColor: 'white' }} /> : <Send size={14} />}
-        {nlLoading ? '' : 'Add'}
+        {nlLoading ? <span className="spinner" style={{ borderTopColor: '#12161A' }} /> : <Send size={14} />}
+        {nlLoading ? '' : 'Parse'}
       </button>
 
       {nlError && (
@@ -224,12 +219,12 @@ export default function NLAddMemberBar() {
             left: 0,
             right: 0,
             marginTop: 8,
-            padding: '8px 14px',
-            background: '#FFF3F0',
-            border: '1px solid #F5C0B8',
+            padding: '10px 14px',
+            background: 'rgba(239, 68, 68, 0.15)',
+            border: '1px solid rgba(239, 68, 68, 0.4)',
             borderRadius: 'var(--radius-sm)',
             fontSize: 12,
-            color: '#E55B44',
+            color: '#F87171',
             zIndex: 10,
           }}
         >

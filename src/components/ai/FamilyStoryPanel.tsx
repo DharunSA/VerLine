@@ -18,7 +18,6 @@ function generateFallbackStory(people: { name: string; dob?: string; dod?: strin
 
   const paragraphs: string[] = [];
 
-  // Opening
   if (oldest) {
     const birthYear = new Date(oldest.dob!).getFullYear();
     const locationStr = oldest.location ? ` in ${oldest.location}` : '';
@@ -32,7 +31,6 @@ function generateFallbackStory(people: { name: string; dob?: string; dod?: strin
     );
   }
 
-  // Middle — generations & locations
   if (locations.length > 0) {
     const locationList = locations.slice(0, 3).join(', ');
     paragraphs.push(
@@ -41,7 +39,6 @@ function generateFallbackStory(people: { name: string; dob?: string; dod?: strin
     );
   }
 
-  // Professions paragraph
   if (professions.length > 1) {
     const profList = professions.slice(0, 4).join(', ');
     paragraphs.push(
@@ -50,7 +47,6 @@ function generateFallbackStory(people: { name: string; dob?: string; dod?: strin
     );
   }
 
-  // Closing
   paragraphs.push(
     `Every name in this tree is a thread in a larger story — one still being written. By preserving these memories, we honour those who came before and give those who come after a place to stand.`
   );
@@ -88,7 +84,6 @@ export default function FamilyStoryPanel() {
         setStory(result.narrative);
         setIsAIGenerated(true);
       } catch {
-        // AI unavailable — use template fallback
         const fallback = generateFallbackStory(peopleList);
         setStory(fallback);
         setIsAIGenerated(false);
@@ -102,9 +97,10 @@ export default function FamilyStoryPanel() {
   return (
     <div
       style={{
-        background: 'white',
-        borderRadius: 'var(--radius-md)',
+        background: 'var(--surface-1)',
+        borderRadius: 'var(--radius-lg)',
         border: '1px solid var(--surface-2)',
+        boxShadow: 'var(--shadow-md)',
         overflow: 'hidden',
       }}
     >
@@ -113,38 +109,49 @@ export default function FamilyStoryPanel() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '16px 20px',
+          padding: '18px 24px',
           borderBottom: '1px solid var(--surface-2)',
-          background: 'rgba(194, 103, 42, 0.04)',
+          background: 'rgba(229, 169, 60, 0.08)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <BookOpen size={16} color="var(--color-accent)" />
-          <h3 className="font-serif" style={{ fontSize: 17, margin: 0, fontWeight: 600 }}>
-            Family Story
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              background: 'rgba(229, 169, 60, 0.18)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <BookOpen size={16} color="var(--color-amber-glow)" />
+          </div>
+          <h3 className="font-serif" style={{ fontSize: 22, margin: 0, fontWeight: 700, color: 'var(--color-cream)' }}>
+            Heirloom Family Chronicle
           </h3>
           {isAIGenerated && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, color: '#8B5EA6', fontWeight: 600, background: 'rgba(139,94,166,0.1)', padding: '2px 8px', borderRadius: 100 }}>
-              <Sparkles size={10} /> AI
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: 'var(--color-amber-glow)', fontWeight: 600, background: 'rgba(229,169,60,0.14)', padding: '3px 10px', borderRadius: 100, border: '1px solid rgba(229,169,60,0.25)' }}>
+              <Sparkles size={11} /> AI Story
             </span>
           )}
         </div>
         <button
           onClick={generate}
           disabled={storyLoading}
+          className="btn-primary"
           style={{
-            display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px',
-            background: 'var(--color-accent)', color: 'white', border: 'none',
-            borderRadius: 'var(--radius-sm)', fontSize: 12, fontWeight: 600,
-            cursor: storyLoading ? 'default' : 'pointer', opacity: storyLoading ? 0.7 : 1,
+            display: 'flex', alignItems: 'center', gap: 6, padding: '7px 16px',
+            fontSize: 13, fontWeight: 600, opacity: storyLoading ? 0.7 : 1,
           }}
         >
-          {storyLoading ? <span className="spinner" style={{ borderTopColor: 'white' }} /> : <RefreshCw size={12} />}
-          {story ? 'Regenerate' : 'Generate'}
+          {storyLoading ? <span className="spinner" style={{ borderTopColor: '#12161A' }} /> : <RefreshCw size={14} />}
+          {story ? 'Regenerate Chronicle' : 'Generate Chronicle'}
         </button>
       </div>
 
-      <div style={{ padding: '16px 20px' }}>
+      <div style={{ padding: '24px' }}>
         <AnimatePresence mode="wait">
           {storyLoading ? (
             <motion.div
@@ -152,10 +159,10 @@ export default function FamilyStoryPanel() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'var(--text-muted)', fontSize: 13 }}
+              style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'var(--color-warm-gray)', fontSize: 14 }}
             >
-              <span className="spinner" />
-              Weaving your family story…
+              <span className="spinner" style={{ borderTopColor: 'var(--color-amber-glow)' }} />
+              Weaving your multi-generational family story…
             </motion.div>
           ) : story ? (
             <motion.div
@@ -164,13 +171,21 @@ export default function FamilyStoryPanel() {
               animate={{ opacity: 1, y: 0 }}
             >
               {error && (
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 12, fontStyle: 'italic' }}>
+                <div style={{ fontSize: 12, color: 'var(--color-amber-glow)', marginBottom: 14, fontStyle: 'italic' }}>
                   ℹ️ {error}
                 </div>
               )}
-              <div style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, fontStyle: 'italic' }}>
+              <div
+                className="font-serif"
+                style={{
+                  fontSize: 17,
+                  color: 'var(--color-cream)',
+                  lineHeight: 1.8,
+                  fontStyle: 'italic',
+                }}
+              >
                 {story.split('\n').map((para, i) => (
-                  <p key={i} style={{ margin: '0 0 12px' }}>{para}</p>
+                  <p key={i} style={{ margin: '0 0 16px' }}>{para}</p>
                 ))}
               </div>
             </motion.div>
@@ -179,13 +194,13 @@ export default function FamilyStoryPanel() {
               key="empty"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              style={{ textAlign: 'center', padding: '20px 0' }}
+              style={{ textAlign: 'center', padding: '24px 0' }}
             >
-              <div style={{ fontSize: 32, marginBottom: 8 }}>📖</div>
-              <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>
-                Click "Generate" to create a narrated family story.{' '}
-                <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                  Works offline too — powered by Claude AI when available.
+              <div style={{ fontSize: 36, marginBottom: 10 }}>📖</div>
+              <p style={{ fontSize: 14, color: 'var(--color-warm-gray)', margin: 0 }}>
+                Click "Generate Chronicle" to synthesize a warm multi-generational family biography.{' '}
+                <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                  Powered by Dual LLM (Google Gemini Flash & Groq) with built-in client offline fallback.
                 </span>
               </p>
             </motion.div>

@@ -2,7 +2,7 @@ import { memo, useCallback, useState, useRef, useEffect } from 'react';
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, UserPlus, Eye, Edit, Heart, UserCheck, Users } from 'lucide-react';
-import type { Person, RelationInput } from '../../engine/types';
+import type { Person } from '../../engine/types';
 import { usePeopleStore } from '../../stores/peopleStore';
 import { useUIStore } from '../../stores/uiStore';
 import { useAIStore } from '../../stores/aiStore';
@@ -103,81 +103,89 @@ const PersonNode = memo(({ data, selected }: NodeProps) => {
       : `b. ${birthYear}`
     : null;
 
+  const nodeBorderColor = branchColor || 'var(--color-amber-glow)';
+
   return (
     <div style={{ position: 'relative' }}>
       <motion.div
         className={`person-node ${selected ? 'selected' : ''}`}
         style={{
-          width: 180,
+          width: 184,
           padding: '14px 16px',
-          borderTop: `3.5px solid ${branchColor}`,
+          background: 'rgba(30, 38, 47, 0.94)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: 'var(--radius-lg)',
+          border: selected ? '2px solid var(--color-amber-glow)' : '1px solid var(--surface-2)',
+          borderTop: `4px solid ${nodeBorderColor}`,
+          boxShadow: selected ? '0 0 20px rgba(229, 169, 60, 0.35)' : '0 4px 16px rgba(0,0,0,0.4)',
           position: 'relative',
         }}
-        whileHover={{ y: -2, boxShadow: '0 12px 32px rgba(44,36,32,0.14)' }}
+        whileHover={{ y: -2, boxShadow: '0 8px 24px rgba(229, 169, 60, 0.2)' }}
         onClick={handleClick}
         onContextMenu={handleContextMenu}
         layout
       >
-        {/* Target handle (parent edge connection / top connector) */}
+        {/* Top Handles */}
         <Handle
           type="target"
           position={Position.Top}
           id="top-target"
-          style={{ background: branchColor, width: 10, height: 10, border: '2px solid white', cursor: 'crosshair', zIndex: 10 }}
+          style={{ background: nodeBorderColor, width: 10, height: 10, border: '2px solid #12161A', cursor: 'crosshair', zIndex: 10 }}
         />
         <Handle
           type="source"
           position={Position.Top}
           id="top-source"
-          style={{ background: branchColor, width: 10, height: 10, border: '2px solid white', opacity: 0, cursor: 'crosshair', zIndex: 9 }}
+          style={{ background: nodeBorderColor, width: 10, height: 10, border: '2px solid #12161A', opacity: 0, cursor: 'crosshair', zIndex: 9 }}
         />
 
-        {/* Left & Right handles for horizontal spouse / sibling connections */}
+        {/* Left & Right Handles */}
         <Handle
           type="source"
           position={Position.Left}
           id="left-source"
-          style={{ background: branchColor, width: 8, height: 8, border: '2px solid white', cursor: 'crosshair', opacity: 0.8 }}
+          style={{ background: nodeBorderColor, width: 8, height: 8, border: '2px solid #12161A', cursor: 'crosshair', opacity: 0.8 }}
         />
         <Handle
           type="target"
           position={Position.Left}
           id="left-target"
-          style={{ background: branchColor, width: 8, height: 8, border: '2px solid white', cursor: 'crosshair', opacity: 0 }}
+          style={{ background: nodeBorderColor, width: 8, height: 8, border: '2px solid #12161A', cursor: 'crosshair', opacity: 0 }}
         />
 
         <Handle
           type="source"
           position={Position.Right}
           id="right-source"
-          style={{ background: branchColor, width: 8, height: 8, border: '2px solid white', cursor: 'crosshair', opacity: 0.8 }}
+          style={{ background: nodeBorderColor, width: 8, height: 8, border: '2px solid #12161A', cursor: 'crosshair', opacity: 0.8 }}
         />
         <Handle
           type="target"
           position={Position.Right}
           id="right-target"
-          style={{ background: branchColor, width: 8, height: 8, border: '2px solid white', cursor: 'crosshair', opacity: 0 }}
+          style={{ background: nodeBorderColor, width: 8, height: 8, border: '2px solid #12161A', cursor: 'crosshair', opacity: 0 }}
         />
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           {/* Avatar */}
           {person.photoUrl ? (
             <img
               src={person.photoUrl}
               alt={person.name}
               className="person-avatar"
-              style={{ width: 44, height: 44, flexShrink: 0 }}
+              style={{ width: 46, height: 46, flexShrink: 0, border: `2px solid ${nodeBorderColor}` }}
               loading="lazy"
             />
           ) : (
             <div
               className="person-avatar-placeholder"
               style={{
-                width: 44,
-                height: 44,
-                background: `linear-gradient(135deg, ${branchColor}cc, ${branchColor})`,
+                width: 46,
+                height: 46,
+                background: `linear-gradient(135deg, ${nodeBorderColor}cc, ${nodeBorderColor})`,
                 flexShrink: 0,
                 fontSize: 16,
+                border: '2px solid rgba(255,255,255,0.15)',
               }}
             >
               {getInitials(person.name)}
@@ -189,13 +197,13 @@ const PersonNode = memo(({ data, selected }: NodeProps) => {
             <div
               className="font-serif"
               style={{
-                fontSize: 14,
-                fontWeight: 600,
-                color: 'var(--color-charcoal)',
+                fontSize: 15,
+                fontWeight: 700,
+                color: 'var(--color-cream)',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                lineHeight: 1.2,
+                lineHeight: 1.1,
               }}
             >
               {person.name.split(' ')[0]}
@@ -203,17 +211,18 @@ const PersonNode = memo(({ data, selected }: NodeProps) => {
             <div
               style={{
                 fontSize: 11,
-                color: 'var(--text-secondary)',
-                marginTop: 1,
+                color: 'var(--color-warm-gray)',
+                marginTop: 2,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
+                fontWeight: 500,
               }}
             >
               {person.name.split(' ').slice(1).join(' ')}
             </div>
             {lifespan && (
-              <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 3 }}>
+              <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 3, fontWeight: 500 }}>
                 {lifespan}
               </div>
             )}
@@ -226,8 +235,10 @@ const PersonNode = memo(({ data, selected }: NodeProps) => {
             style={{
               marginTop: 8,
               fontSize: 10,
-              color: 'var(--text-secondary)',
-              background: 'var(--surface-1)',
+              fontWeight: 500,
+              color: 'var(--color-cream)',
+              background: 'var(--surface-0)',
+              border: '1px solid var(--surface-2)',
               padding: '2px 8px',
               borderRadius: 100,
               display: 'inline-block',
@@ -248,8 +259,8 @@ const PersonNode = memo(({ data, selected }: NodeProps) => {
               marginTop: 6,
               fontSize: 10,
               fontWeight: 600,
-              color: 'white',
-              background: branchColor,
+              color: '#12161A',
+              background: nodeBorderColor,
               padding: '2px 8px',
               borderRadius: 100,
               display: 'inline-flex',
@@ -274,14 +285,14 @@ const PersonNode = memo(({ data, selected }: NodeProps) => {
               width: 22,
               height: 22,
               borderRadius: '50%',
-              background: branchColor,
-              color: 'white',
-              border: '2px solid white',
+              background: nodeBorderColor,
+              color: '#12161A',
+              border: '2px solid #12161A',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
               zIndex: 10,
             }}
           >
@@ -289,22 +300,22 @@ const PersonNode = memo(({ data, selected }: NodeProps) => {
           </button>
         )}
 
-        {/* Source handle (child edge connection / bottom connector) */}
+        {/* Bottom Handles */}
         <Handle
           type="source"
           position={Position.Bottom}
           id="bottom-source"
-          style={{ background: branchColor, width: 10, height: 10, border: '2px solid white', cursor: 'crosshair', zIndex: 10 }}
+          style={{ background: nodeBorderColor, width: 10, height: 10, border: '2px solid #12161A', cursor: 'crosshair', zIndex: 10 }}
         />
         <Handle
           type="target"
           position={Position.Bottom}
           id="bottom-target"
-          style={{ background: branchColor, width: 10, height: 10, border: '2px solid white', opacity: 0, cursor: 'crosshair', zIndex: 9 }}
+          style={{ background: nodeBorderColor, width: 10, height: 10, border: '2px solid #12161A', opacity: 0, cursor: 'crosshair', zIndex: 9 }}
         />
       </motion.div>
 
-      {/* Right-click Context Menu */}
+      {/* Context Menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -317,55 +328,37 @@ const PersonNode = memo(({ data, selected }: NodeProps) => {
               top: '100%',
               left: 0,
               marginTop: 8,
-              background: 'white',
+              background: 'var(--surface-0)',
               borderRadius: 'var(--radius-md)',
               border: '1px solid var(--surface-2)',
-              boxShadow: 'var(--shadow-lg)',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
               zIndex: 100,
-              minWidth: 160,
+              minWidth: 165,
               overflow: 'hidden',
               padding: '4px 0',
             }}
           >
-            <div style={{ padding: '6px 12px', fontSize: 10, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', borderBottom: '1px solid var(--surface-2)' }}>
+            <div style={{ padding: '6px 12px', fontSize: 10, fontWeight: 700, color: 'var(--color-amber-glow)', textTransform: 'uppercase', borderBottom: '1px solid var(--surface-2)' }}>
               {person.name.split(' ')[0]}'s Family
             </div>
-            <button
-              onClick={() => handleQuickAdd('PARENT_OF')}
-              style={menuItemStyle}
-            >
-              <UserPlus size={13} color="var(--color-accent)" /> Add Parent
+            <button onClick={() => handleQuickAdd('PARENT_OF')} style={menuItemStyle}>
+              <UserPlus size={13} color="var(--color-amber-glow)" /> Add Parent
             </button>
-            <button
-              onClick={() => handleQuickAdd('CHILD_OF')}
-              style={menuItemStyle}
-            >
-              <UserCheck size={13} color="var(--color-accent)" /> Add Child
+            <button onClick={() => handleQuickAdd('CHILD_OF')} style={menuItemStyle}>
+              <UserCheck size={13} color="var(--color-amber-glow)" /> Add Child
             </button>
-            <button
-              onClick={() => handleQuickAdd('SPOUSE_OF')}
-              style={menuItemStyle}
-            >
-              <Heart size={13} color="var(--color-accent)" /> Add Spouse
+            <button onClick={() => handleQuickAdd('SPOUSE_OF')} style={menuItemStyle}>
+              <Heart size={13} color="var(--color-amber-glow)" /> Add Spouse
             </button>
-            <button
-              onClick={() => handleQuickAdd('SIBLING_OF')}
-              style={menuItemStyle}
-            >
-              <Users size={13} color="var(--color-accent)" /> Add Sibling
+            <button onClick={() => handleQuickAdd('SIBLING_OF')} style={menuItemStyle}>
+              <Users size={13} color="var(--color-amber-glow)" /> Add Sibling
             </button>
             <div style={{ height: 1, background: 'var(--surface-2)', margin: '4px 0' }} />
-            <button
-              onClick={() => { setMenuOpen(false); selectPerson(person.id); openDrawer(); }}
-              style={menuItemStyle}
-            >
-              <Eye size={13} /> View Details
+            <button onClick={() => { setMenuOpen(false); selectPerson(person.id); openDrawer(); }} style={menuItemStyle}>
+              <Eye size={13} color="var(--color-cream)" /> View Details
             </button>
-            <button
-              onClick={() => { setMenuOpen(false); openEditModal(person.id); }}
-              style={menuItemStyle}
-            >
-              <Edit size={13} /> Edit Person
+            <button onClick={() => { setMenuOpen(false); openEditModal(person.id); }} style={menuItemStyle}>
+              <Edit size={13} color="var(--color-cream)" /> Edit Person
             </button>
           </motion.div>
         )}
@@ -384,7 +377,7 @@ const menuItemStyle: React.CSSProperties = {
   border: 'none',
   fontSize: 12,
   fontWeight: 500,
-  color: 'var(--text-primary)',
+  color: 'var(--color-cream)',
   cursor: 'pointer',
   textAlign: 'left',
 };

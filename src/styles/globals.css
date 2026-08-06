@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,41 +6,50 @@
 
 /* ─── Design Tokens ─────────────────────────────────────────────────────────── */
 :root {
-  /* Warm heirloom palette */
+  /* Golden Heirloom Palette derived from Family_tree.jpeg */
+  --color-canvas: #12161A;
+  --color-surface-0: #161C22;
+  --color-surface-1: #1E262F;
+  --color-surface-2: #2A3440;
+
+  --color-amber-glow: #E5A93C;
+  --color-amber-dark: #B47820;
+  --color-emerald-leaf: #3A755C;
+  --color-sage-highlight: #5E8B7A;
+
   --color-cream: #FAF7F2;
   --color-parchment: #F2EBE0;
-  --color-warm-gray: #8C7E70;
-  --color-charcoal: #2C2420;
-  --color-ink: #1A1210;
+  --color-warm-gray: #A0AEC0;
+  --color-charcoal: #12161A;
+  --color-ink: #FAF7F2;
 
-  /* Accent — deep amber/sienna */
-  --color-accent: #C2672A;
-  --color-accent-light: #E8A870;
-  --color-accent-dark: #8B3F12;
+  --color-accent: #E5A93C;
+  --color-accent-light: #F5C46B;
+  --color-accent-dark: #B47820;
 
   /* Branch colors (propagated from root ancestors) */
-  --branch-1: #C2672A;  /* sienna */
-  --branch-2: #4A7A5E;  /* forest green */
+  --branch-1: #E5A93C;  /* amber gold */
+  --branch-2: #3A755C;  /* emerald forest */
   --branch-3: #5B6EA6;  /* slate blue */
   --branch-4: #8B5EA6;  /* plum */
-  --branch-5: #A65E5E;  /* dusty rose */
-  --branch-6: #5E8B7A;  /* teal */
+  --branch-5: #C2672A;  /* sienna */
+  --branch-6: #5E8B7A;  /* sage */
 
   /* Surfaces */
-  --surface-0: var(--color-cream);
-  --surface-1: var(--color-parchment);
-  --surface-2: #EAE0D4;
+  --surface-0: var(--color-surface-0);
+  --surface-1: var(--color-surface-1);
+  --surface-2: var(--color-surface-2);
 
   /* Text */
-  --text-primary: var(--color-charcoal);
+  --text-primary: var(--color-cream);
   --text-secondary: var(--color-warm-gray);
-  --text-muted: #B0A090;
+  --text-muted: #64748B;
 
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(44, 36, 32, 0.08), 0 1px 2px rgba(44, 36, 32, 0.04);
-  --shadow-md: 0 4px 12px rgba(44, 36, 32, 0.10), 0 2px 4px rgba(44, 36, 32, 0.06);
-  --shadow-lg: 0 10px 30px rgba(44, 36, 32, 0.12), 0 4px 8px rgba(44, 36, 32, 0.08);
-  --shadow-xl: 0 20px 50px rgba(44, 36, 32, 0.16), 0 8px 16px rgba(44, 36, 32, 0.10);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.6);
 
   /* Border radius */
   --radius-sm: 6px;
@@ -49,8 +58,8 @@
   --radius-xl: 24px;
 
   /* Canvas */
-  --canvas-bg: #F5EFE8;
-  --generation-band: rgba(44, 36, 32, 0.025);
+  --canvas-bg: var(--color-canvas);
+  --generation-band: rgba(229, 169, 60, 0.03);
 }
 
 /* ─── Base Styles ────────────────────────────────────────────────────────────── */
@@ -66,7 +75,7 @@ html, body, #root {
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: var(--surface-0);
+  background: var(--color-canvas);
   color: var(--text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -76,6 +85,10 @@ body {
 /* ─── Typography ─────────────────────────────────────────────────────────────── */
 .font-serif {
   font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+}
+
+.font-script {
+  font-family: 'Caveat', cursive;
 }
 
 h1, h2, h3, .display {
@@ -89,7 +102,8 @@ h1, h2, h3, .display {
 
 /* Person node card on the canvas */
 .person-node {
-  background: white;
+  background: rgba(30, 38, 47, 0.92);
+  backdrop-filter: blur(8px);
   border: 1.5px solid var(--surface-2);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
@@ -99,14 +113,14 @@ h1, h2, h3, .display {
 }
 
 .person-node:hover {
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 8px 24px rgba(229, 169, 60, 0.15), var(--shadow-lg);
   transform: translateY(-2px);
   border-color: var(--color-accent-light);
 }
 
 .person-node.selected {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(194, 103, 42, 0.2), var(--shadow-lg);
+  box-shadow: 0 0 0 3px rgba(229, 169, 60, 0.25), var(--shadow-lg);
 }
 
 /* Photo avatar */
@@ -115,7 +129,7 @@ h1, h2, h3, .display {
   height: 56px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid white;
+  border: 2px solid var(--surface-2);
   box-shadow: var(--shadow-sm);
 }
 
@@ -129,8 +143,8 @@ h1, h2, h3, .display {
   font-family: 'Cormorant Garamond', serif;
   font-size: 22px;
   font-weight: 600;
-  color: white;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  color: #FAF7F2;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 
 /* Relationship badge */
@@ -147,13 +161,15 @@ h1, h2, h3, .display {
 }
 
 .rel-badge-direct {
-  background: rgba(194, 103, 42, 0.12);
-  color: var(--color-accent-dark);
+  background: rgba(229, 169, 60, 0.18);
+  color: var(--color-accent-light);
+  border: 1px solid rgba(229, 169, 60, 0.3);
 }
 
 .rel-badge-extended {
-  background: rgba(44, 36, 32, 0.06);
-  color: var(--color-warm-gray);
+  background: rgba(94, 139, 122, 0.18);
+  color: var(--color-sage-highlight);
+  border: 1px solid rgba(94, 139, 122, 0.3);
 }
 
 /* Canvas generation bands */
@@ -169,22 +185,23 @@ h1, h2, h3, .display {
 
 /* Search result card */
 .search-card {
-  background: white;
+  background: var(--surface-1);
   border: 1px solid var(--surface-2);
   border-radius: var(--radius-md);
   padding: 16px;
-  transition: box-shadow 150ms ease, transform 150ms ease;
+  transition: box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease;
   cursor: pointer;
 }
 
 .search-card:hover {
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
+  border-color: rgba(229, 169, 60, 0.3);
 }
 
 /* Sidebar / Drawer */
 .member-drawer {
-  background: white;
+  background: var(--surface-0);
   border-left: 1px solid var(--surface-2);
   box-shadow: var(--shadow-xl);
 }
@@ -195,20 +212,20 @@ h1, h2, h3, .display {
   height: 52px;
   border-radius: 50%;
   background: var(--color-accent);
-  color: white;
+  color: #12161A;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 4px 20px rgba(229, 169, 60, 0.4);
   border: none;
   cursor: pointer;
   transition: background 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 }
 
 .fab:hover {
-  background: var(--color-accent-dark);
+  background: var(--color-accent-light);
   transform: scale(1.08);
-  box-shadow: var(--shadow-xl);
+  box-shadow: 0 6px 25px rgba(229, 169, 60, 0.5);
 }
 
 .fab:active {
@@ -221,7 +238,7 @@ h1, h2, h3, .display {
   padding: 10px 14px;
   border: 1.5px solid var(--surface-2);
   border-radius: var(--radius-sm);
-  background: white;
+  background: var(--surface-1);
   color: var(--text-primary);
   font-family: 'Inter', sans-serif;
   font-size: 14px;
@@ -231,7 +248,7 @@ h1, h2, h3, .display {
 
 .verline-input:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(194, 103, 42, 0.12);
+  box-shadow: 0 0 0 3px rgba(229, 169, 60, 0.2);
 }
 
 .verline-input::placeholder {
@@ -242,18 +259,19 @@ h1, h2, h3, .display {
 .btn-primary {
   padding: 10px 20px;
   background: var(--color-accent);
-  color: white;
+  color: #12161A;
   border: none;
   border-radius: var(--radius-sm);
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 150ms ease, transform 100ms ease;
+  transition: background 150ms ease, transform 100ms ease, box-shadow 150ms ease;
 }
 
 .btn-primary:hover {
-  background: var(--color-accent-dark);
+  background: var(--color-accent-light);
+  box-shadow: 0 0 15px rgba(229, 169, 60, 0.3);
 }
 
 .btn-primary:active {
@@ -311,8 +329,8 @@ h1, h2, h3, .display {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(26, 18, 16, 0.5);
-  backdrop-filter: blur(4px);
+  background: rgba(10, 14, 18, 0.75);
+  backdrop-filter: blur(8px);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -321,7 +339,8 @@ h1, h2, h3, .display {
 }
 
 .modal-content {
-  background: white;
+  background: var(--surface-0);
+  border: 1px solid var(--surface-2);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-xl);
   max-width: 540px;
@@ -332,33 +351,35 @@ h1, h2, h3, .display {
 
 /* Stats widget */
 .stat-card {
-  background: white;
+  background: var(--surface-1);
   border: 1px solid var(--surface-2);
   border-radius: var(--radius-md);
   padding: 20px;
-  transition: box-shadow 150ms ease;
+  transition: box-shadow 150ms ease, border-color 150ms ease;
 }
 
 .stat-card:hover {
   box-shadow: var(--shadow-md);
+  border-color: rgba(229, 169, 60, 0.25);
 }
 
 /* NL bar */
 .nl-bar {
-  background: white;
+  background: rgba(30, 38, 47, 0.95);
+  backdrop-filter: blur(12px);
   border: 1.5px solid var(--color-accent);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
-  padding: 4px 4px 4px 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 15px rgba(229, 169, 60, 0.2);
+  padding: 6px 6px 6px 18px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 /* Sidebar nav */
 .sidebar {
   width: 240px;
-  background: var(--surface-1);
+  background: var(--surface-0);
   border-right: 1px solid var(--surface-2);
   display: flex;
   flex-direction: column;
@@ -386,13 +407,14 @@ h1, h2, h3, .display {
 }
 
 .nav-item:hover {
-  background: var(--surface-2);
+  background: var(--surface-1);
   color: var(--text-primary);
 }
 
 .nav-item.active {
-  background: rgba(194, 103, 42, 0.10);
+  background: rgba(229, 169, 60, 0.14);
   color: var(--color-accent);
+  border: 1px solid rgba(229, 169, 60, 0.25);
 }
 
 /* React Flow overrides */
@@ -405,6 +427,7 @@ h1, h2, h3, .display {
   overflow: hidden;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--surface-2);
+  background: var(--surface-1) !important;
 }
 
 .react-flow__controls {
@@ -415,9 +438,11 @@ h1, h2, h3, .display {
 }
 
 .react-flow__controls button {
-  background: white;
+  background: var(--surface-1);
   border: none;
   border-bottom: 1px solid var(--surface-2);
+  color: var(--text-primary);
+  fill: var(--text-primary);
 }
 
 .react-flow__controls button:last-child {
@@ -425,7 +450,7 @@ h1, h2, h3, .display {
 }
 
 .react-flow__controls button:hover {
-  background: var(--surface-1);
+  background: var(--surface-2);
 }
 
 /* Scrollbar styling */
@@ -501,8 +526,9 @@ h1, h2, h3, .display {
 /* Tooltip */
 .tooltip {
   position: absolute;
-  background: var(--color-charcoal);
-  color: white;
+  background: var(--color-surface-1);
+  border: 1px solid var(--surface-2);
+  color: var(--color-cream);
   padding: 4px 10px;
   border-radius: var(--radius-sm);
   font-size: 12px;

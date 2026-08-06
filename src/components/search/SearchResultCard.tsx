@@ -15,7 +15,7 @@ function getInitials(name: string): string {
 }
 
 const AVATAR_COLORS = [
-  '#C2672A', '#4A7A5E', '#5B6EA6', '#8B5EA6', '#A65E5E', '#5E8B7A',
+  '#E5A93C', '#3A755C', '#5B6EA6', '#8B5EA6', '#C2672A', '#5E8B7A',
 ];
 
 function getAvatarColor(id: string): string {
@@ -29,6 +29,8 @@ export default function SearchResultCard({
   relationship,
   onClick,
 }: SearchResultCardProps) {
+  const avatarColor = getAvatarColor(person.id);
+
   return (
     <motion.div
       className="search-card"
@@ -37,9 +39,15 @@ export default function SearchResultCard({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
+      style={{
+        background: 'var(--surface-1)',
+        border: '1px solid var(--surface-2)',
+        borderRadius: 'var(--radius-md)',
+        padding: '16px 18px',
+      }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-        {/* Avatar */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        {/* Avatar with golden theme ring */}
         {person.photoUrl ? (
           <img
             src={person.photoUrl}
@@ -50,6 +58,8 @@ export default function SearchResultCard({
               borderRadius: '50%',
               objectFit: 'cover',
               flexShrink: 0,
+              border: `2px solid ${avatarColor}`,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
             }}
           />
         ) : (
@@ -58,15 +68,17 @@ export default function SearchResultCard({
               width: 52,
               height: 52,
               borderRadius: '50%',
-              background: `linear-gradient(135deg, ${getAvatarColor(person.id)}cc, ${getAvatarColor(person.id)})`,
+              background: `linear-gradient(135deg, ${avatarColor}dd, ${avatarColor})`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontFamily: 'Cormorant Garamond, serif',
-              fontSize: 20,
-              fontWeight: 600,
-              color: 'white',
+              fontSize: 22,
+              fontWeight: 700,
+              color: '#12161A',
               flexShrink: 0,
+              border: '2px solid rgba(255,255,255,0.2)',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
             }}
           >
             {getInitials(person.name)}
@@ -75,13 +87,14 @@ export default function SearchResultCard({
 
         {/* Main info */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
             <span
               className="font-serif"
               style={{
-                fontSize: 17,
-                fontWeight: 600,
-                color: 'var(--text-primary)',
+                fontSize: 19,
+                fontWeight: 700,
+                color: 'var(--color-cream)',
+                lineHeight: 1.2,
               }}
             >
               {person.name}
@@ -100,7 +113,7 @@ export default function SearchResultCard({
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 12,
+              gap: 14,
               marginTop: 4,
               flexWrap: 'wrap',
             }}
@@ -110,12 +123,13 @@ export default function SearchResultCard({
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 4,
+                  gap: 5,
                   fontSize: 13,
-                  color: 'var(--text-secondary)',
+                  color: 'var(--color-warm-gray)',
+                  fontWeight: 500,
                 }}
               >
-                <Briefcase size={12} />
+                <Briefcase size={13} color="var(--color-amber-glow)" />
                 {person.profession}
               </span>
             )}
@@ -124,12 +138,13 @@ export default function SearchResultCard({
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 4,
+                  gap: 5,
                   fontSize: 13,
-                  color: 'var(--text-secondary)',
+                  color: 'var(--color-warm-gray)',
+                  fontWeight: 500,
                 }}
               >
-                <MapPin size={12} />
+                <MapPin size={13} color="var(--color-emerald-leaf)" />
                 {person.location}
               </span>
             )}
@@ -140,7 +155,7 @@ export default function SearchResultCard({
             <div
               style={{
                 marginTop: 6,
-                fontSize: 11,
+                fontSize: 12,
                 color: 'var(--text-muted)',
                 fontStyle: 'italic',
               }}
@@ -150,7 +165,7 @@ export default function SearchResultCard({
           )}
         </div>
 
-        <ChevronRight size={16} color="var(--text-muted)" />
+        <ChevronRight size={18} color="var(--color-warm-gray)" />
       </div>
     </motion.div>
   );

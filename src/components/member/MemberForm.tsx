@@ -28,27 +28,27 @@ function Field({ label, name, type = 'text', placeholder, required }: FieldProps
   const error = errors[name];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
       <label
         style={{
           fontSize: 12,
           fontWeight: 600,
-          color: 'var(--text-secondary)',
+          color: 'var(--color-warm-gray)',
           textTransform: 'uppercase',
           letterSpacing: '0.05em',
         }}
       >
-        {label} {required && <span style={{ color: 'var(--color-accent)' }}>*</span>}
+        {label} {required && <span style={{ color: 'var(--color-amber-glow)' }}>*</span>}
       </label>
       <input
         {...register(name)}
         type={type}
         placeholder={placeholder}
         className="verline-input"
-        style={error ? { borderColor: '#E55B44' } : {}}
+        style={error ? { borderColor: '#F87171' } : {}}
       />
       {error && (
-        <span style={{ fontSize: 11, color: '#E55B44' }}>
+        <span style={{ fontSize: 11, color: '#F87171' }}>
           {error.message as string}
         </span>
       )}
@@ -68,31 +68,31 @@ function SelectField({ label, name, options, required }: SelectFieldProps) {
   const error = errors[name];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
       <label
         style={{
           fontSize: 12,
           fontWeight: 600,
-          color: 'var(--text-secondary)',
+          color: 'var(--color-warm-gray)',
           textTransform: 'uppercase',
           letterSpacing: '0.05em',
         }}
       >
-        {label} {required && <span style={{ color: 'var(--color-accent)' }}>*</span>}
+        {label} {required && <span style={{ color: 'var(--color-amber-glow)' }}>*</span>}
       </label>
       <select
         {...register(name)}
         className="verline-input"
-        style={error ? { borderColor: '#E55B44' } : {}}
+        style={error ? { borderColor: '#F87171' } : {}}
       >
         {options.map(opt => (
-          <option key={opt.value} value={opt.value}>
+          <option key={opt.value} value={opt.value} style={{ background: '#1E262F', color: '#FAF7F2' }}>
             {opt.label}
           </option>
         ))}
       </select>
       {error && (
-        <span style={{ fontSize: 11, color: '#E55B44' }}>
+        <span style={{ fontSize: 11, color: '#F87171' }}>
           {error.message as string}
         </span>
       )}
@@ -110,12 +110,12 @@ interface TextAreaFieldProps {
 function TextAreaField({ label, name, placeholder, rows = 3 }: TextAreaFieldProps) {
   const { register } = useFormContext<MemberFormValues>();
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
       <label
         style={{
           fontSize: 12,
           fontWeight: 600,
-          color: 'var(--text-secondary)',
+          color: 'var(--color-warm-gray)',
           textTransform: 'uppercase',
           letterSpacing: '0.05em',
         }}
@@ -167,7 +167,7 @@ export default function MemberForm() {
       <Field label="Photo URL" name="photoUrl" placeholder="https://..." />
 
       {/* Bio */}
-      <TextAreaField label="Bio" name="bio" placeholder="A short note about this person…" />
+      <TextAreaField label="Bio & Memory Notes" name="bio" placeholder="A short heirloom note about this person…" />
     </div>
   );
 }

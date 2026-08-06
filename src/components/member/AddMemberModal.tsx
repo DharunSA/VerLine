@@ -230,6 +230,8 @@ export default function AddMemberModal() {
             flexDirection: 'column',
             maxHeight: '90vh',
             overflow: 'hidden',
+            background: 'var(--surface-0)',
+            border: '1px solid var(--surface-2)',
           }}
         >
           {/* Header */}
@@ -244,10 +246,10 @@ export default function AddMemberModal() {
             }}
           >
             <div>
-              <h2 className="font-serif" style={{ fontSize: 22, margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <h2 className="font-serif" style={{ fontSize: 24, fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: 8, color: 'var(--color-cream)' }}>
                 {mode === 'edit' ? (
                   <>
-                    <Edit3 size={18} color="var(--color-accent)" />
+                    <Edit3 size={18} color="var(--color-amber-glow)" />
                     Edit Member
                   </>
                 ) : (
@@ -255,7 +257,7 @@ export default function AddMemberModal() {
                 )}
               </h2>
               {mode === 'add' && (
-                <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: '2px 0 0' }}>
+                <p style={{ fontSize: 12, color: 'var(--color-warm-gray)', margin: '4px 0 0', fontWeight: 500 }}>
                   {step === 'details' ? 'Step 1 of 2 — Personal details' : 'Step 2 of 2 — Family relationship'}
                 </p>
               )}
@@ -268,7 +270,7 @@ export default function AddMemberModal() {
                 height: 32,
                 borderRadius: '50%',
                 border: '1px solid var(--surface-2)',
-                background: 'none',
+                background: 'var(--surface-1)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -300,8 +302,8 @@ export default function AddMemberModal() {
                   padding: '8px 12px',
                   background: 'none',
                   border: 'none',
-                  borderBottom: `2px solid ${step === 'details' ? 'var(--color-accent)' : 'transparent'}`,
-                  color: step === 'details' ? 'var(--color-accent)' : 'var(--text-secondary)',
+                  borderBottom: `2px solid ${step === 'details' ? 'var(--color-amber-glow)' : 'transparent'}`,
+                  color: step === 'details' ? 'var(--color-amber-glow)' : 'var(--color-warm-gray)',
                   fontWeight: step === 'details' ? 600 : 500,
                   fontSize: 13,
                   cursor: 'pointer',
@@ -319,8 +321,8 @@ export default function AddMemberModal() {
                   padding: '8px 12px',
                   background: 'none',
                   border: 'none',
-                  borderBottom: `2px solid ${step === 'relationship' ? 'var(--color-accent)' : 'transparent'}`,
-                  color: step === 'relationship' ? 'var(--color-accent)' : 'var(--text-secondary)',
+                  borderBottom: `2px solid ${step === 'relationship' ? 'var(--color-amber-glow)' : 'transparent'}`,
+                  color: step === 'relationship' ? 'var(--color-amber-glow)' : 'var(--color-warm-gray)',
                   fontWeight: step === 'relationship' ? 600 : 500,
                   fontSize: 13,
                   cursor: 'pointer',
@@ -333,7 +335,7 @@ export default function AddMemberModal() {
             </div>
           )}
 
-          {/* Scrollable Body */}
+          {/* Form */}
           <FormProvider {...methods}>
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -356,13 +358,13 @@ export default function AddMemberModal() {
                         initial={{ opacity: 0, y: -8 }}
                         animate={{ opacity: 1, y: 0 }}
                         style={{
-                          marginTop: 12,
-                          padding: '8px 12px',
-                          background: 'rgba(194, 103, 42, 0.06)',
-                          border: '1px solid rgba(194, 103, 42, 0.2)',
+                          marginTop: 14,
+                          padding: '10px 14px',
+                          background: 'rgba(229, 169, 60, 0.12)',
+                          border: '1px solid rgba(229, 169, 60, 0.3)',
                           borderRadius: 'var(--radius-sm)',
-                          fontSize: 12,
-                          color: 'var(--color-accent)',
+                          fontSize: 13,
+                          color: 'var(--color-amber-glow)',
                           display: 'flex',
                           alignItems: 'center',
                           gap: 6,
@@ -382,19 +384,19 @@ export default function AddMemberModal() {
                           style={{
                             marginTop: 16,
                             padding: '12px 14px',
-                            background: 'rgba(194, 103, 42, 0.08)',
+                            background: 'rgba(229, 169, 60, 0.12)',
                             borderRadius: 'var(--radius-sm)',
-                            border: '1px solid rgba(194, 103, 42, 0.3)',
+                            border: '1px solid rgba(229, 169, 60, 0.3)',
                           }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                            <AlertCircle size={14} color="var(--color-accent)" />
-                            <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-accent)' }}>
+                            <AlertCircle size={14} color="var(--color-amber-glow)" />
+                            <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-amber-glow)' }}>
                               Possible duplicate
                             </span>
                           </div>
                           {duplicates.map(p => (
-                            <div key={p.id} style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+                            <div key={p.id} style={{ fontSize: 12, color: 'var(--color-cream)' }}>
                               Did you mean{' '}<strong>{p.name}</strong>
                               {p.dob && ` (b. ${new Date(p.dob).getFullYear()})`}?
                             </div>
@@ -413,11 +415,11 @@ export default function AddMemberModal() {
                         style={{
                           marginTop: 12,
                           padding: '10px 14px',
-                          background: 'rgba(194, 103, 42, 0.08)',
-                          border: '1px solid rgba(194, 103, 42, 0.3)',
+                          background: 'rgba(229, 169, 60, 0.12)',
+                          border: '1px solid rgba(229, 169, 60, 0.3)',
                           borderRadius: 'var(--radius-sm)',
                           fontSize: 12,
-                          color: 'var(--color-accent)',
+                          color: 'var(--color-amber-glow)',
                           display: 'flex',
                           alignItems: 'flex-start',
                           gap: 8,
@@ -441,7 +443,7 @@ export default function AddMemberModal() {
                   alignItems: 'center',
                   padding: '16px 24px',
                   borderTop: '1px solid var(--surface-2)',
-                  background: 'white',
+                  background: 'var(--surface-0)',
                   flexShrink: 0,
                 }}
               >
@@ -456,7 +458,7 @@ export default function AddMemberModal() {
                       disabled={saving}
                       style={{ display: 'flex', alignItems: 'center', gap: 8 }}
                     >
-                      {saving ? <span className="spinner" /> : <Edit3 size={16} />}
+                      {saving ? <span className="spinner" style={{ borderTopColor: '#12161A' }} /> : <Edit3 size={16} />}
                       {saving ? 'Saving…' : 'Save Changes'}
                     </button>
                   </>
@@ -490,7 +492,7 @@ export default function AddMemberModal() {
                       disabled={saving}
                       style={{ display: 'flex', alignItems: 'center', gap: 8 }}
                     >
-                      {saving ? <span className="spinner" /> : <UserPlus size={16} />}
+                      {saving ? <span className="spinner" style={{ borderTopColor: '#12161A' }} /> : <UserPlus size={16} />}
                       {saving ? 'Adding…' : 'Add to Family'}
                     </button>
                   </>

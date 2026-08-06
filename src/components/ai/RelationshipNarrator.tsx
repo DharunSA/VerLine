@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Quote } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAIStore } from '../../stores/aiStore';
 import { narrateRelationship } from '../../lib/ai';
@@ -38,7 +38,6 @@ export default function RelationshipNarrator({
         setNarratorResult(cacheKey, result);
       })
       .catch(() => {
-        // Fallback to engine-generated description
         setSentence(`${toName} is your ${relationship.label.toLowerCase()}${
           relationship.pathSummary ? ` — ${relationship.pathSummary}` : ''
         }.`);
@@ -57,19 +56,23 @@ export default function RelationshipNarrator({
         style={{
           display: 'flex',
           alignItems: 'flex-start',
-          gap: 8,
-          padding: '10px 14px',
-          background: 'rgba(194, 103, 42, 0.06)',
-          borderRadius: 'var(--radius-sm)',
-          border: '1px solid rgba(194, 103, 42, 0.15)',
+          gap: 12,
+          padding: '14px 16px',
+          background: 'rgba(229, 169, 60, 0.08)',
+          borderRadius: 'var(--radius-md)',
+          borderLeft: '4px solid var(--color-amber-glow)',
+          borderTop: '1px solid rgba(229, 169, 60, 0.2)',
+          borderRight: '1px solid rgba(229, 169, 60, 0.2)',
+          borderBottom: '1px solid rgba(229, 169, 60, 0.2)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
         }}
       >
-        <Sparkles size={14} color="var(--color-accent)" style={{ marginTop: 2, flexShrink: 0 }} />
-        <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontStyle: 'italic', lineHeight: 1.5 }}>
+        <Quote size={18} color="var(--color-amber-glow)" style={{ marginTop: 2, flexShrink: 0, opacity: 0.8 }} />
+        <div style={{ flex: 1, fontSize: 14, color: 'var(--color-cream)', fontStyle: 'italic', lineHeight: 1.6 }}>
           {loading ? (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span className="spinner" />
-              Generating…
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--color-warm-gray)' }}>
+              <span className="spinner" style={{ borderTopColor: 'var(--color-amber-glow)' }} />
+              Weaving kinship connection narrative…
             </span>
           ) : (
             sentence ?? `${toName} is your ${relationship.label.toLowerCase()}.`

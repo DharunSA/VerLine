@@ -14,7 +14,7 @@ function getInitials(name: string): string {
   return name.split(' ').slice(0, 2).map(w => w[0]?.toUpperCase() ?? '').join('');
 }
 
-const AVATAR_COLORS = ['#C2672A', '#4A7A5E', '#5B6EA6', '#8B5EA6', '#A65E5E', '#5E8B7A'];
+const AVATAR_COLORS = ['#E5A93C', '#3A755C', '#5B6EA6', '#8B5EA6', '#C2672A', '#5E8B7A'];
 function getAvatarColor(id: string): string {
   let hash = 0;
   for (let i = 0; i < id.length; i++) hash = id.charCodeAt(i) + ((hash << 5) - hash);
@@ -72,7 +72,6 @@ export default function MemberDrawer() {
     const children = (graph.childrenOf.get(selectedId) ?? []).map(id => people[id]).filter(Boolean);
     const spouses = (graph.spousesOf.get(selectedId) ?? []).map(id => people[id]).filter(Boolean);
 
-    // Find siblings (share at least one parent)
     const parentIds = new Set(graph.parentsOf.get(selectedId) ?? []);
     const siblings: typeof parents = [];
     for (const parentId of parentIds) {
@@ -181,7 +180,8 @@ export default function MemberDrawer() {
             style={{
               position: 'fixed',
               inset: 0,
-              background: 'rgba(26, 18, 16, 0.3)',
+              background: 'rgba(10, 14, 18, 0.65)',
+              backdropFilter: 'blur(6px)',
               zIndex: 50,
             }}
           />
@@ -198,34 +198,36 @@ export default function MemberDrawer() {
               top: 0,
               right: 0,
               bottom: 0,
-              width: 380,
+              width: 400,
               zIndex: 51,
               overflowY: 'auto',
               display: 'flex',
               flexDirection: 'column',
+              background: 'var(--surface-0)',
+              borderLeft: '1px solid var(--surface-2)',
             }}
           >
             {/* Header */}
             <div
               style={{
-                background: `linear-gradient(135deg, ${avatarColor}22, ${avatarColor}10)`,
-                padding: '24px 20px 20px',
+                background: `linear-gradient(135deg, ${avatarColor}25, rgba(22, 28, 34, 0.95))`,
+                padding: '24px 24px 20px',
                 borderBottom: '1px solid var(--surface-2)',
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 18 }}>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button
                     onClick={handleViewInTree}
                     title="View in tree"
                     style={{
                       display: 'flex', alignItems: 'center', gap: 6,
-                      padding: '6px 12px', background: 'white',
+                      padding: '6px 12px', background: 'var(--surface-1)',
                       border: '1px solid var(--surface-2)', borderRadius: 'var(--radius-sm)',
-                      fontSize: 12, fontWeight: 500, cursor: 'pointer', color: 'var(--text-secondary)',
+                      fontSize: 12, fontWeight: 500, cursor: 'pointer', color: 'var(--color-cream)',
                     }}
                   >
-                    <TreePine size={13} />
+                    <TreePine size={13} color="var(--color-amber-glow)" />
                     View in tree
                   </button>
                   <button
@@ -233,9 +235,9 @@ export default function MemberDrawer() {
                     title="Edit member details"
                     style={{
                       display: 'flex', alignItems: 'center', gap: 6,
-                      padding: '6px 12px', background: 'white',
+                      padding: '6px 12px', background: 'var(--surface-1)',
                       border: '1px solid var(--surface-2)', borderRadius: 'var(--radius-sm)',
-                      fontSize: 12, fontWeight: 500, cursor: 'pointer', color: 'var(--text-secondary)',
+                      fontSize: 12, fontWeight: 500, cursor: 'pointer', color: 'var(--color-cream)',
                     }}
                   >
                     <Edit3 size={13} />
@@ -247,9 +249,9 @@ export default function MemberDrawer() {
                       title="Remove from tree"
                       style={{
                         width: 32, height: 32, display: 'flex', alignItems: 'center',
-                        justifyContent: 'center', background: 'white',
+                        justifyContent: 'center', background: 'var(--surface-1)',
                         border: '1px solid var(--surface-2)', borderRadius: 'var(--radius-sm)',
-                        cursor: 'pointer', color: '#E55B44',
+                        cursor: 'pointer', color: '#F87171',
                       }}
                     >
                       <Trash2 size={14} />
@@ -260,13 +262,13 @@ export default function MemberDrawer() {
                       animate={{ opacity: 1, scale: 1 }}
                       style={{ display: 'flex', gap: 6, alignItems: 'center' }}
                     >
-                      <span style={{ fontSize: 11, color: '#E55B44', display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <span style={{ fontSize: 11, color: '#F87171', display: 'flex', alignItems: 'center', gap: 4 }}>
                         <AlertTriangle size={12} /> Sure?
                       </span>
                       <button
                         onClick={handleDeleteConfirm}
                         style={{
-                          padding: '4px 10px', background: '#E55B44', color: 'white',
+                          padding: '4px 10px', background: '#EF4444', color: 'white',
                           border: 'none', borderRadius: 'var(--radius-sm)', fontSize: 11,
                           fontWeight: 600, cursor: 'pointer',
                         }}
@@ -276,7 +278,7 @@ export default function MemberDrawer() {
                       <button
                         onClick={() => setConfirmDelete(false)}
                         style={{
-                          padding: '4px 10px', background: 'white', color: 'var(--text-secondary)',
+                          padding: '4px 10px', background: 'var(--surface-1)', color: 'var(--color-cream)',
                           border: '1px solid var(--surface-2)', borderRadius: 'var(--radius-sm)',
                           fontSize: 11, cursor: 'pointer',
                         }}
@@ -290,7 +292,7 @@ export default function MemberDrawer() {
                   onClick={closeDrawer}
                   style={{
                     width: 32, height: 32, borderRadius: '50%',
-                    border: '1px solid var(--surface-2)', background: 'white',
+                    border: '1px solid var(--surface-2)', background: 'var(--surface-1)',
                     cursor: 'pointer', display: 'flex', alignItems: 'center',
                     justifyContent: 'center', color: 'var(--text-muted)',
                   }}
@@ -299,22 +301,27 @@ export default function MemberDrawer() {
                 </button>
               </div>
 
-              {/* Avatar + name */}
+              {/* Avatar + Editorial Title */}
               <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                 {person.photoUrl ? (
                   <img
                     src={person.photoUrl}
                     alt={person.name}
-                    style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: '3px solid white', boxShadow: 'var(--shadow-md)' }}
+                    style={{
+                      width: 76, height: 76, borderRadius: '50%', objectFit: 'cover',
+                      border: `3px solid ${avatarColor}`, boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+                      flexShrink: 0,
+                    }}
                   />
                 ) : (
                   <div
                     style={{
-                      width: 72, height: 72, borderRadius: '50%',
-                      background: `linear-gradient(135deg, ${avatarColor}cc, ${avatarColor})`,
+                      width: 76, height: 76, borderRadius: '50%',
+                      background: `linear-gradient(135deg, ${avatarColor}dd, ${avatarColor})`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontFamily: 'Cormorant Garamond, serif', fontSize: 26, fontWeight: 600,
-                      color: 'white', border: '3px solid white', boxShadow: 'var(--shadow-md)', flexShrink: 0,
+                      fontFamily: 'Cormorant Garamond, serif', fontSize: 28, fontWeight: 700,
+                      color: '#12161A', border: `3px solid ${avatarColor}`, boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+                      flexShrink: 0,
                     }}
                   >
                     {getInitials(person.name)}
@@ -322,11 +329,11 @@ export default function MemberDrawer() {
                 )}
 
                 <div style={{ flex: 1 }}>
-                  <h2 className="font-serif" style={{ fontSize: 22, margin: '0 0 2px', lineHeight: 1.2 }}>
+                  <h2 className="font-serif" style={{ fontSize: 24, fontWeight: 700, margin: '0 0 4px', lineHeight: 1.1, color: 'var(--color-cream)' }}>
                     {person.name}
                   </h2>
                   {age && (
-                    <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 6 }}>
+                    <div style={{ fontSize: 12, color: 'var(--color-warm-gray)', marginBottom: 8, fontWeight: 500 }}>
                       {person.dob && new Date(person.dob).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
                       {person.dod ? ` – ${new Date(person.dod).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}` : ''}
                     </div>
@@ -345,22 +352,22 @@ export default function MemberDrawer() {
               </div>
             </div>
 
-            {/* Quick stats */}
-            <div style={{ display: 'flex', borderBottom: '1px solid var(--surface-2)', padding: '12px 20px', gap: 16, flexWrap: 'wrap' }}>
+            {/* Quick Stats */}
+            <div style={{ display: 'flex', borderBottom: '1px solid var(--surface-2)', padding: '12px 24px', gap: 18, flexWrap: 'wrap' }}>
               {person.profession && (
-                <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, color: 'var(--text-secondary)' }}>
-                  <Briefcase size={13} /> {person.profession}
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--color-warm-gray)', fontWeight: 500 }}>
+                  <Briefcase size={13} color="var(--color-amber-glow)" /> {person.profession}
                 </span>
               )}
               {person.location && (
-                <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, color: 'var(--text-secondary)' }}>
-                  <MapPin size={13} /> {person.location}
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--color-warm-gray)', fontWeight: 500 }}>
+                  <MapPin size={13} color="var(--color-emerald-leaf)" /> {person.location}
                 </span>
               )}
             </div>
 
             {/* Tabs */}
-            <div className="tab-list" style={{ padding: '0 20px' }}>
+            <div className="tab-list" style={{ padding: '0 24px' }}>
               {(['details', 'family', 'timeline'] as TabId[]).map(tab => (
                 <button
                   key={tab}
@@ -373,15 +380,15 @@ export default function MemberDrawer() {
             </div>
 
             {/* Tab content */}
-            <div style={{ padding: '20px', flex: 1 }}>
+            <div style={{ padding: '24px', flex: 1 }}>
               {activeTab === 'details' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                   {person.bio && (
                     <div>
-                      <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>
-                        Bio
+                      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--color-amber-glow)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8 }}>
+                        Biography & Heirloom Notes
                       </div>
-                      <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
+                      <p style={{ fontSize: 14, color: 'var(--color-cream)', lineHeight: 1.6, margin: 0, background: 'var(--surface-1)', padding: 14, borderRadius: 'var(--radius-sm)', border: '1px solid var(--surface-2)' }}>
                         {person.bio}
                       </p>
                     </div>
@@ -390,8 +397,8 @@ export default function MemberDrawer() {
                   {/* AI Relationship Narrator */}
                   {relationship && relationship.label !== 'Unrelated' && relationship.label !== 'Self' && (
                     <div>
-                      <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
-                        How you're related
+                      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--color-amber-glow)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8 }}>
+                        Lineage Path
                       </div>
                       <RelationshipNarrator
                         fromName={viewerName}
@@ -406,12 +413,12 @@ export default function MemberDrawer() {
                   {selectedId === viewerPersonId && (
                     <div
                       style={{
-                        padding: '10px 14px',
-                        background: 'rgba(194, 103, 42, 0.06)',
+                        padding: '12px 16px',
+                        background: 'rgba(229, 169, 60, 0.12)',
                         borderRadius: 'var(--radius-sm)',
-                        border: '1px solid rgba(194, 103, 42, 0.15)',
+                        border: '1px solid rgba(229, 169, 60, 0.3)',
                         fontSize: 13,
-                        color: 'var(--color-accent)',
+                        color: 'var(--color-amber-glow)',
                         fontStyle: 'italic',
                       }}
                     >
@@ -434,10 +441,10 @@ export default function MemberDrawer() {
                         justifyContent: 'center',
                         gap: 8,
                         fontSize: 13,
-                        padding: '8px 14px',
-                        color: 'var(--color-accent)',
-                        borderColor: 'rgba(194, 103, 42, 0.3)',
-                        background: 'rgba(194, 103, 42, 0.04)',
+                        padding: '10px 14px',
+                        color: 'var(--color-amber-glow)',
+                        borderColor: 'rgba(229, 169, 60, 0.3)',
+                        background: 'rgba(229, 169, 60, 0.08)',
                       }}
                     >
                       <Link size={14} />
@@ -448,9 +455,9 @@ export default function MemberDrawer() {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       style={{
-                        padding: 14,
-                        background: 'rgba(194, 103, 42, 0.06)',
-                        border: '1.5px solid rgba(194, 103, 42, 0.3)',
+                        padding: 16,
+                        background: 'var(--surface-1)',
+                        border: '1.5px solid var(--color-amber-glow)',
                         borderRadius: 'var(--radius-sm)',
                         display: 'flex',
                         flexDirection: 'column',
@@ -458,41 +465,41 @@ export default function MemberDrawer() {
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--color-accent)', textTransform: 'uppercase' }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--color-amber-glow)', textTransform: 'uppercase' }}>
                           Connect {person.name.split(' ')[0]} to…
                         </span>
-                        <button onClick={() => setIsConnecting(false)} style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--text-muted)' }}>
+                        <button onClick={() => setIsConnecting(false)} style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: 14, color: 'var(--text-muted)' }}>
                           ✕
                         </button>
                       </div>
 
                       {/* Target search */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'white', padding: '6px 10px', borderRadius: 6, border: '1px solid var(--surface-2)' }}>
-                        <Search size={13} color="var(--text-muted)" />
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--surface-0)', padding: '8px 12px', borderRadius: 6, border: '1px solid var(--surface-2)' }}>
+                        <Search size={14} color="var(--text-muted)" />
                         <input
                           value={targetSearch}
                           onChange={e => setTargetSearch(e.target.value)}
                           placeholder="Search for family member…"
-                          style={{ border: 'none', outline: 'none', fontSize: 13, flex: 1, background: 'transparent' }}
+                          style={{ border: 'none', outline: 'none', fontSize: 13, flex: 1, background: 'transparent', color: 'var(--color-cream)' }}
                         />
                       </div>
 
                       {/* Target candidates */}
                       {availableTargets.length > 0 && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, maxHeight: 140, overflowY: 'auto' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 140, overflowY: 'auto' }}>
                           {availableTargets.map(t => (
                             <button
                               key={t.id}
                               onClick={() => setTargetPersonId(t.id)}
                               style={{
                                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                padding: '6px 10px', background: targetPersonId === t.id ? 'rgba(194,103,42,0.12)' : 'white',
-                                border: `1px solid ${targetPersonId === t.id ? 'var(--color-accent)' : 'var(--surface-2)'}`,
-                                borderRadius: 6, cursor: 'pointer', textAlign: 'left', fontSize: 12,
+                                padding: '8px 12px', background: targetPersonId === t.id ? 'rgba(229, 169, 60, 0.18)' : 'var(--surface-0)',
+                                border: `1px solid ${targetPersonId === t.id ? 'var(--color-amber-glow)' : 'var(--surface-2)'}`,
+                                borderRadius: 6, cursor: 'pointer', textAlign: 'left', fontSize: 13,
                               }}
                             >
-                              <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{t.name}</span>
-                              {targetPersonId === t.id && <Check size={14} color="var(--color-accent)" />}
+                              <span style={{ fontWeight: 500, color: 'var(--color-cream)' }}>{t.name}</span>
+                              {targetPersonId === t.id && <Check size={14} color="var(--color-amber-glow)" />}
                             </button>
                           ))}
                         </div>
@@ -511,10 +518,10 @@ export default function MemberDrawer() {
                               key={rt.value}
                               onClick={() => setConnectRelType(rt.value as typeof connectRelType)}
                               style={{
-                                padding: '6px 8px', fontSize: 11, fontWeight: 600,
-                                background: connectRelType === rt.value ? 'var(--color-accent)' : 'white',
-                                color: connectRelType === rt.value ? 'white' : 'var(--text-primary)',
-                                border: `1px solid ${connectRelType === rt.value ? 'var(--color-accent)' : 'var(--surface-2)'}`,
+                                padding: '8px 10px', fontSize: 11, fontWeight: 600,
+                                background: connectRelType === rt.value ? 'var(--color-amber-glow)' : 'var(--surface-0)',
+                                color: connectRelType === rt.value ? '#12161A' : 'var(--color-cream)',
+                                border: `1px solid ${connectRelType === rt.value ? 'var(--color-amber-glow)' : 'var(--surface-2)'}`,
                                 borderRadius: 6, cursor: 'pointer', textAlign: 'center',
                               }}
                             >
@@ -529,7 +536,7 @@ export default function MemberDrawer() {
                         onClick={handleSaveConnection}
                         disabled={!targetPersonId}
                         className="btn-primary"
-                        style={{ padding: '8px', fontSize: 12, width: '100%', opacity: targetPersonId ? 1 : 0.5, cursor: targetPersonId ? 'pointer' : 'default' }}
+                        style={{ padding: '9px', fontSize: 13, width: '100%', opacity: targetPersonId ? 1 : 0.5, cursor: targetPersonId ? 'pointer' : 'default' }}
                       >
                         Save Connection
                       </button>
@@ -544,7 +551,7 @@ export default function MemberDrawer() {
                   ].map(({ label, items }) =>
                     items.length > 0 ? (
                       <div key={label}>
-                        <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--color-amber-glow)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8 }}>
                           {label} ({items.length})
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -552,47 +559,47 @@ export default function MemberDrawer() {
                             <div
                               key={p.id}
                               style={{
-                                display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px',
-                                background: p.id === selectedId ? 'rgba(194, 103, 42, 0.08)' : 'var(--surface-1)',
-                                border: `1px solid ${p.id === selectedId ? 'rgba(194,103,42,0.3)' : 'var(--surface-2)'}`,
+                                display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px',
+                                background: p.id === selectedId ? 'rgba(229, 169, 60, 0.12)' : 'var(--surface-1)',
+                                border: `1px solid ${p.id === selectedId ? 'rgba(229,169,60,0.3)' : 'var(--surface-2)'}`,
                                 borderRadius: 'var(--radius-sm)', transition: 'all 150ms',
                               }}
                             >
                               <button
                                 onClick={() => handleFamilyMemberClick(p.id)}
                                 style={{
-                                  display: 'flex', alignItems: 'center', gap: 10, flex: 1,
+                                  display: 'flex', alignItems: 'center', gap: 12, flex: 1,
                                   background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', padding: 0,
                                 }}
                               >
                                 <div
                                   style={{
-                                    width: 36, height: 36, borderRadius: '50%',
+                                    width: 38, height: 38, borderRadius: '50%',
                                     background: getAvatarColor(p.id),
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    color: 'white', fontSize: 13, fontWeight: 600, flexShrink: 0,
+                                    color: '#12161A', fontSize: 14, fontWeight: 700, flexShrink: 0,
                                     fontFamily: 'Cormorant Garamond, serif',
                                   }}
                                 >
                                   {getInitials(p.name)}
                                 </div>
                                 <div>
-                                  <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>{p.name}</div>
-                                  {p.profession && <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{p.profession}</div>}
+                                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--color-cream)' }}>{p.name}</div>
+                                  {p.profession && <div style={{ fontSize: 11, color: 'var(--color-warm-gray)' }}>{p.profession}</div>}
                                 </div>
                               </button>
 
-                              {/* Unlink / Remove relationship button */}
+                              {/* Unlink button */}
                               <button
                                 onClick={(e) => handleUnlinkRelationship(e, p)}
                                 title={`Unlink relationship with ${p.name}`}
                                 style={{
                                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                                   width: 28, height: 28, borderRadius: 'var(--radius-sm)',
-                                  background: 'white', border: '1px solid var(--surface-2)',
+                                  background: 'var(--surface-0)', border: '1px solid var(--surface-2)',
                                   color: 'var(--text-muted)', cursor: 'pointer', flexShrink: 0,
                                 }}
-                                onMouseEnter={e => { e.currentTarget.style.color = '#E55B44'; e.currentTarget.style.borderColor = '#F5C0B8'; }}
+                                onMouseEnter={e => { e.currentTarget.style.color = '#F87171'; e.currentTarget.style.borderColor = '#EF4444'; }}
                                 onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--surface-2)'; }}
                               >
                                 <Unlink size={13} />
@@ -612,18 +619,18 @@ export default function MemberDrawer() {
               )}
 
               {activeTab === 'timeline' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   {[
                     person.dob && { year: new Date(person.dob).getFullYear(), label: 'Born', icon: '🌱', dateStr: person.dob },
                     person.dod && { year: new Date(person.dod).getFullYear(), label: 'Passed away', icon: '🕊️', dateStr: person.dod },
                   ].filter(Boolean).map((event, i) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--surface-1)', border: '1px solid var(--surface-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>
+                    <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, background: 'var(--surface-1)', padding: 14, borderRadius: 'var(--radius-sm)', border: '1px solid var(--surface-2)' }}>
+                      <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--surface-0)', border: '1px solid var(--surface-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0 }}>
                         {(event as { icon: string }).icon}
                       </div>
                       <div>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{(event as { label: string }).label}</div>
-                        <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--color-cream)' }}>{(event as { label: string }).label}</div>
+                        <div style={{ fontSize: 12, color: 'var(--color-warm-gray)', marginTop: 2 }}>
                           {new Date((event as { dateStr: string }).dateStr).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
                         </div>
                       </div>
@@ -634,7 +641,7 @@ export default function MemberDrawer() {
                       No life dates recorded yet.{' '}
                       <button
                         onClick={handleEditClick}
-                        style={{ color: 'var(--color-accent)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, textDecoration: 'underline' }}
+                        style={{ color: 'var(--color-amber-glow)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, textDecoration: 'underline' }}
                       >
                         Add dates
                       </button>

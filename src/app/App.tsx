@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Home as HomeIcon, TreePine, Search, Plus, Leaf } from 'lucide-react';
+import { Home as HomeIcon, TreePine, Search, Plus, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import Home from './routes/Home';
@@ -29,48 +29,47 @@ function AppLayout() {
     }
   }, [treeId, seedDemoData]);
 
-  const isTreeRoute = location.pathname === '/tree';
-
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-      {/* Sidebar */}
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', backgroundColor: 'var(--color-canvas)' }}>
+      {/* Sidebar Navigation */}
       <nav className="sidebar">
-        {/* Logo */}
+        {/* Logo Header */}
         <div className="sidebar-logo">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div
               style={{
-                width: 36,
-                height: 36,
-                borderRadius: 10,
-                background: 'linear-gradient(135deg, #C2672A, #8B3F12)',
+                width: 40,
+                height: 40,
+                borderRadius: 12,
+                background: 'linear-gradient(135deg, #E5A93C, #B47820)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                boxShadow: '0 4px 15px rgba(229, 169, 60, 0.35)',
               }}
             >
-              <Leaf size={20} color="white" />
+              <TreePine size={22} color="#12161A" />
             </div>
             <div>
               <div
                 className="font-serif"
-                style={{ fontSize: 20, fontWeight: 700, color: 'var(--color-charcoal)', lineHeight: 1 }}
+                style={{ fontSize: 22, fontWeight: 700, color: 'var(--color-cream)', lineHeight: 1.1, letterSpacing: '-0.01em' }}
               >
-                Verline
+                VerLine
               </div>
-              <div style={{ fontSize: 10, color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
+              <div style={{ fontSize: 11, color: 'var(--color-warm-gray)', letterSpacing: '0.04em', marginTop: 2 }}>
                 Your roots, in one line.
               </div>
             </div>
           </div>
         </div>
 
-        {/* Navigation */}
-        <div style={{ padding: '12px 8px', flex: 1 }}>
+        {/* Navigation Items */}
+        <div style={{ padding: '16px 8px', flex: 1 }}>
           {[
             { to: '/', icon: HomeIcon, label: 'Home' },
             { to: '/tree', icon: TreePine, label: 'Family Tree' },
-            { to: '/search', icon: Search, label: 'Search' },
+            { to: '/search', icon: Search, label: 'Search & Kinship' },
           ].map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}
@@ -78,14 +77,14 @@ function AppLayout() {
               end={to === '/'}
               className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
             >
-              <Icon size={17} />
-              {label}
+              <Icon size={18} />
+              <span>{label}</span>
             </NavLink>
           ))}
         </div>
 
-        {/* Add Member button */}
-        <div style={{ padding: '12px 16px 20px' }}>
+        {/* Add Member Button */}
+        <div style={{ padding: '12px 16px 16px' }}>
           <button
             className="btn-primary"
             onClick={openAddModal}
@@ -96,29 +95,35 @@ function AppLayout() {
               justifyContent: 'center',
               gap: 8,
               borderRadius: 'var(--radius-md)',
-              padding: '10px',
+              padding: '11px',
+              fontWeight: 600,
+              boxShadow: '0 4px 16px rgba(229, 169, 60, 0.3)',
             }}
           >
-            <Plus size={16} />
-            Add Member
+            <Plus size={18} />
+            <span>Add Member</span>
           </button>
         </div>
 
-        {/* Tree info */}
+        {/* Demo Mode Badge */}
         <div
           style={{
             padding: '12px 16px 16px',
             borderTop: '1px solid var(--surface-2)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
           }}
         >
-          <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-            Demo Mode — configure Supabase to save your tree
+          <Sparkles size={14} style={{ color: 'var(--color-amber-glow)', flexShrink: 0 }} />
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.3 }}>
+            Demo Mode — Sharma Family
           </div>
         </div>
       </nav>
 
-      {/* Main content */}
-      <main style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
+      {/* Main Content View */}
+      <main style={{ flex: 1, overflow: 'hidden', position: 'relative', backgroundColor: 'var(--color-canvas)' }}>
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
             <Route
@@ -180,7 +185,7 @@ function AppLayout() {
           </Routes>
         </AnimatePresence>
 
-        {/* Global modals (available on all routes) */}
+        {/* Global Modals & Drawers */}
         <AddMemberModal />
         <MemberDrawer />
         <ToastContainer />

@@ -17,6 +17,7 @@ import MiniControls from './MiniControls';
 import { useAutoLayout, type GenerationBand } from './useAutoLayout';
 import { usePeopleStore } from '../../stores/peopleStore';
 import { useUIStore } from '../../stores/uiStore';
+import familyTreeBg from '../../assets/Family_tree.jpeg';
 
 const nodeTypes = { personNode: PersonNode };
 const edgeTypes = { relationshipEdge: RelationshipEdge };
@@ -25,7 +26,7 @@ interface TreeCanvasInnerProps {
   viewerPersonId?: string;
 }
 
-/** Store absolute positions (not deltas) to localStorage */
+/** Store absolute positions to localStorage */
 function saveNodePosition(nodeId: string, x: number, y: number) {
   try {
     const stored = JSON.parse(localStorage.getItem('verline-node-offsets') ?? '{}');
@@ -48,7 +49,7 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
   const addToast = useUIStore(s => s.addToast);
   const { fitView, setCenter, zoomIn, zoomOut } = useReactFlow();
 
-  // Hybrid Manual Connection State (Drag-and-Drop Handle Linking)
+  // Hybrid Manual Connection State
   const [pendingConnection, setPendingConnection] = useState<{ sourceId: string; targetId: string } | null>(null);
   const [selectedRelType, setSelectedRelType] = useState<'PARENT' | 'CHILD' | 'SPOUSE' | 'SIBLING'>('CHILD');
   const [showLegend, setShowLegend] = useState(true);
@@ -105,7 +106,7 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
     }, 150);
   }, [fitView]);
 
-  // Save ABSOLUTE positions to localStorage (not deltas)
+  // Save ABSOLUTE positions to localStorage
   const handleNodeDragStop = useCallback((_event: unknown, node: { id: string; position: { x: number; y: number } }) => {
     saveNodePosition(node.id, node.position.x, node.position.y);
   }, []);
@@ -136,7 +137,6 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger inside inputs/textareas
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
 
@@ -162,7 +162,7 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [fitView, zoomIn, zoomOut, closeMemberDrawer]);
 
-  // Reset layout to default automatic generation structure
+  // Reset layout to default automatic structure
   const handleResetLayout = useCallback(() => {
     localStorage.removeItem('verline-node-offsets');
     addToast('Tree layout reset to auto-aligned structure', 'success');
@@ -197,7 +197,7 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
   const targetPerson = pendingConnection ? people[pendingConnection.targetId] : null;
 
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+    <div style={{ width: '100%', height: '100%', position: 'relative', backgroundColor: 'var(--color-canvas)' }}>
       <ReactFlow
         nodes={displayNodes}
         edges={layoutEdges}
@@ -209,13 +209,13 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
         minZoom={0.2}
         maxZoom={2}
         proOptions={{ hideAttribution: true }}
-        style={{ background: 'var(--canvas-bg)' }}
+        style={{ background: 'var(--color-canvas)' }}
       >
         <Background
           variant={BackgroundVariant.Dots}
           gap={24}
-          size={1}
-          color="var(--surface-2)"
+          size={1.2}
+          color="rgba(229, 169, 60, 0.15)"
         />
 
         <MiniControls />
@@ -234,7 +234,7 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
               <path
                 d="M0,0 L0,8 L8,4 Z"
                 fill="var(--color-warm-gray)"
-                opacity="0.6"
+                opacity="0.7"
               />
             </marker>
           </defs>
@@ -258,11 +258,11 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 10 }}
               onClick={e => e.stopPropagation()}
-              style={{ maxWidth: 420, padding: 24 }}
+              style={{ maxWidth: 440, padding: 24, background: 'var(--surface-0)', border: '1px solid var(--surface-2)' }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                <h3 className="font-serif" style={{ fontSize: 20, margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Link2 size={18} color="var(--color-accent)" />
+                <h3 className="font-serif" style={{ fontSize: 22, margin: 0, display: 'flex', alignItems: 'center', gap: 8, color: 'var(--color-cream)' }}>
+                  <Link2 size={18} color="var(--color-amber-glow)" />
                   Connect Family Members
                 </h3>
                 <button
@@ -273,11 +273,11 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
                 </button>
               </div>
 
-              <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16, lineHeight: 1.5 }}>
-                Select how <strong>{sourcePerson.name}</strong> is related to <strong>{targetPerson.name}</strong>:
+              <p style={{ fontSize: 14, color: 'var(--color-warm-gray)', marginBottom: 18, lineHeight: 1.5 }}>
+                Select how <strong style={{ color: 'var(--color-cream)' }}>{sourcePerson.name}</strong> is related to <strong style={{ color: 'var(--color-cream)' }}>{targetPerson.name}</strong>:
               </p>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 22 }}>
                 {[
                   { value: 'CHILD', label: `${sourcePerson.name.split(' ')[0]} is Child of` },
                   { value: 'PARENT', label: `${sourcePerson.name.split(' ')[0]} is Parent of` },
@@ -289,12 +289,12 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
                     type="button"
                     onClick={() => setSelectedRelType(rt.value as typeof selectedRelType)}
                     style={{
-                      padding: '10px 12px',
+                      padding: '12px 14px',
                       fontSize: 12,
                       fontWeight: 600,
-                      background: selectedRelType === rt.value ? 'var(--color-accent)' : 'white',
-                      color: selectedRelType === rt.value ? 'white' : 'var(--text-primary)',
-                      border: `1.5px solid ${selectedRelType === rt.value ? 'var(--color-accent)' : 'var(--surface-2)'}`,
+                      background: selectedRelType === rt.value ? 'var(--color-amber-glow)' : 'var(--surface-1)',
+                      color: selectedRelType === rt.value ? '#12161A' : 'var(--color-cream)',
+                      border: `1.5px solid ${selectedRelType === rt.value ? 'var(--color-amber-glow)' : 'var(--surface-2)'}`,
                       borderRadius: 'var(--radius-sm)',
                       cursor: 'pointer',
                       textAlign: 'center',
@@ -319,7 +319,7 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
         )}
       </AnimatePresence>
 
-      {/* Generation background bands (horizontal lanes) */}
+      {/* Generation background bands */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
         {generationBands.map((band: GenerationBand) => (
           <div
@@ -330,9 +330,9 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
               right: 0,
               top: band.y,
               height: band.height,
-              background: band.generation % 2 === 1 ? 'rgba(44, 36, 32, 0.025)' : 'transparent',
-              borderTop: '1px solid rgba(44, 36, 32, 0.05)',
-              borderBottom: '1px solid rgba(44, 36, 32, 0.05)',
+              background: band.generation % 2 === 1 ? 'rgba(229, 169, 60, 0.02)' : 'transparent',
+              borderTop: '1px dashed rgba(229, 169, 60, 0.08)',
+              borderBottom: '1px dashed rgba(229, 169, 60, 0.08)',
               paddingLeft: 24,
               paddingTop: 8,
               display: 'flex',
@@ -343,12 +343,13 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
               style={{
                 fontSize: 10,
                 fontWeight: 600,
-                color: 'var(--text-muted)',
+                color: 'var(--color-amber-glow)',
                 letterSpacing: '0.08em',
                 textTransform: 'uppercase',
-                background: 'rgba(250, 247, 242, 0.8)',
-                padding: '2px 8px',
+                background: 'rgba(30, 38, 47, 0.85)',
+                padding: '3px 10px',
                 borderRadius: 100,
+                border: '1px solid rgba(229, 169, 60, 0.2)',
               }}
             >
               {band.label}
@@ -366,11 +367,12 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
           display: 'flex',
           gap: 8,
           zIndex: 10,
-          background: 'white',
+          background: 'rgba(30, 38, 47, 0.94)',
+          backdropFilter: 'blur(8px)',
           borderRadius: 'var(--radius-md)',
           border: '1px solid var(--surface-2)',
           padding: 4,
-          boxShadow: 'var(--shadow-sm)',
+          boxShadow: 'var(--shadow-md)',
         }}
       >
         {viewerPersonId && (
@@ -380,12 +382,12 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
             style={{
               display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px',
               border: 'none', background: 'none', fontSize: 12, fontWeight: 500,
-              color: 'var(--text-secondary)', cursor: 'pointer', borderRadius: 'var(--radius-sm)',
+              color: 'var(--color-cream)', cursor: 'pointer', borderRadius: 'var(--radius-sm)',
             }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-1)')}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-2)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'none')}
           >
-            <Focus size={14} color="var(--color-accent)" />
+            <Focus size={14} color="var(--color-amber-glow)" />
             Center on Me
           </button>
         )}
@@ -396,12 +398,12 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
           style={{
             display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px',
             border: 'none', background: 'none', fontSize: 12, fontWeight: 500,
-            color: 'var(--text-secondary)', cursor: 'pointer', borderRadius: 'var(--radius-sm)',
+            color: 'var(--color-cream)', cursor: 'pointer', borderRadius: 'var(--radius-sm)',
           }}
-          onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-1)')}
+          onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-2)')}
           onMouseLeave={e => (e.currentTarget.style.background = 'none')}
         >
-          <RotateCcw size={14} />
+          <RotateCcw size={14} color="var(--color-emerald-leaf)" />
           Auto Align
         </button>
 
@@ -411,9 +413,9 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
           style={{
             display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px',
             border: 'none', background: 'none', fontSize: 12, fontWeight: 500,
-            color: 'var(--text-secondary)', cursor: 'pointer', borderRadius: 'var(--radius-sm)',
+            color: 'var(--color-cream)', cursor: 'pointer', borderRadius: 'var(--radius-sm)',
           }}
-          onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-1)')}
+          onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-2)')}
           onMouseLeave={e => (e.currentTarget.style.background = 'none')}
         >
           <Download size={14} />
@@ -429,14 +431,14 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
           left: 24,
           fontSize: 11,
           fontWeight: 500,
-          color: 'var(--text-secondary)',
-          background: 'rgba(255, 255, 255, 0.88)',
+          color: 'var(--color-cream)',
+          background: 'rgba(30, 38, 47, 0.92)',
           borderRadius: 100,
-          padding: '6px 14px',
+          padding: '6px 16px',
           zIndex: 10,
           backdropFilter: 'blur(10px)',
           border: '1px solid var(--surface-2)',
-          boxShadow: 'var(--shadow-sm)',
+          boxShadow: 'var(--shadow-md)',
           display: 'flex',
           alignItems: 'center',
           gap: 8,
@@ -444,9 +446,9 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
       >
         <span>💡 Drag a line between handles to link cards</span>
         <span style={{ opacity: 0.3 }}>|</span>
-        <span><kbd style={{ fontFamily: 'monospace', fontWeight: 600 }}>F</kbd> fit view</span>
+        <span><kbd style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--color-amber-glow)' }}>F</kbd> fit view</span>
         <span style={{ opacity: 0.3 }}>|</span>
-        <span><kbd style={{ fontFamily: 'monospace', fontWeight: 600 }}>+</kbd>/<kbd style={{ fontFamily: 'monospace', fontWeight: 600 }}>-</kbd> zoom</span>
+        <span><kbd style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--color-amber-glow)' }}>+</kbd>/<kbd style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--color-amber-glow)' }}>-</kbd> zoom</span>
       </div>
 
       {/* Legend Panel */}
@@ -455,28 +457,28 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
           position: 'absolute',
           top: 16,
           right: 16,
-          background: 'rgba(255, 255, 255, 0.92)',
+          background: 'rgba(30, 38, 47, 0.94)',
           borderRadius: 'var(--radius-md)',
           border: '1px solid var(--surface-2)',
           padding: showLegend ? '10px 14px' : '6px 10px',
           fontSize: 11,
-          color: 'var(--text-secondary)',
+          color: 'var(--color-cream)',
           display: 'flex',
           flexDirection: 'column',
           gap: 6,
-          boxShadow: 'var(--shadow-sm)',
+          boxShadow: 'var(--shadow-md)',
           zIndex: 10,
           backdropFilter: 'blur(8px)',
           transition: 'all 200ms ease',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-          <span style={{ fontWeight: 600, fontSize: 11, color: 'var(--text-primary)' }}>Legend</span>
+          <span style={{ fontWeight: 600, fontSize: 11, color: 'var(--color-cream)' }}>Legend</span>
           <button
             onClick={() => setShowLegend(!showLegend)}
             style={{
               border: 'none', background: 'none', cursor: 'pointer', fontSize: 10,
-              color: 'var(--text-muted)', padding: 0, textDecoration: 'underline',
+              color: 'var(--color-amber-glow)', padding: 0, textDecoration: 'underline',
             }}
           >
             {showLegend ? 'Hide' : 'Show'}
@@ -486,9 +488,9 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
         {showLegend && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
             {[
-              { label: 'Blood relation', style: { borderBottom: '2px solid var(--color-warm-gray)' } },
-              { label: 'Marriage', style: { borderBottom: '2px dashed var(--color-accent-light)' } },
-              { label: 'Adopted / Step', style: { borderBottom: '2px dotted var(--color-warm-gray)' } },
+              { label: 'Blood relation', style: { borderBottom: '2px solid #8C7E70' } },
+              { label: 'Marriage', style: { borderBottom: '2px dashed var(--color-amber-glow)' } },
+              { label: 'Adopted / Step', style: { borderBottom: '2px dotted #5E8B7A' } },
             ].map(({ label, style }) => (
               <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 24, ...style }} />
@@ -499,12 +501,15 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
         )}
       </div>
 
-      {/* Empty state */}
+      {/* Empty state overlay */}
       {emptyState && (
         <div
           style={{
             position: 'absolute',
             inset: 0,
+            backgroundImage: `linear-gradient(to bottom, rgba(18, 22, 26, 0.8), rgba(18, 22, 26, 0.95)), url(${familyTreeBg})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -513,13 +518,11 @@ function TreeCanvasInner({ viewerPersonId: _viewerPersonId }: TreeCanvasInnerPro
             zIndex: 10,
           }}
         >
-          <div style={{ fontSize: 64, marginBottom: 16, opacity: 0.3, fontFamily: 'Cormorant Garamond, serif' }}>
-            🌳
-          </div>
-          <h2 className="font-serif" style={{ fontSize: 28, color: 'var(--text-secondary)', marginBottom: 8 }}>
+          <div style={{ fontSize: 64, marginBottom: 16 }}>🌳</div>
+          <h2 className="font-serif" style={{ fontSize: 32, color: 'var(--color-cream)', marginBottom: 8 }}>
             Plant your family tree
           </h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: 15, maxWidth: 320, textAlign: 'center' }}>
+          <p style={{ color: 'var(--color-warm-gray)', fontSize: 15, maxWidth: 340, textAlign: 'center', lineHeight: 1.6 }}>
             Start by adding yourself, then add parents, siblings, and children.
             The tree grows as your story unfolds.
           </p>

@@ -39,14 +39,14 @@ export default function RelationshipPicker({ value, onChange }: RelationshipPick
   const selectedAnchor = value?.anchorPersonId ? people[value.anchorPersonId] : null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
       <div>
         <label
           style={{
             display: 'block',
             fontSize: 12,
             fontWeight: 600,
-            color: 'var(--text-secondary)',
+            color: 'var(--color-warm-gray)',
             textTransform: 'uppercase',
             letterSpacing: '0.05em',
             marginBottom: 8,
@@ -55,20 +55,20 @@ export default function RelationshipPicker({ value, onChange }: RelationshipPick
           Relationship to existing member
         </label>
 
-        {/* Anchor person picker */}
+        {/* Anchor person picker input */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 8,
-            padding: '8px 12px',
+            gap: 10,
+            padding: '10px 14px',
             background: 'var(--surface-1)',
             borderRadius: 'var(--radius-sm)',
             border: '1.5px solid var(--surface-2)',
             marginBottom: 8,
           }}
         >
-          <Search size={14} color="var(--text-muted)" />
+          <Search size={15} color="var(--color-amber-glow)" />
           <input
             value={personSearch}
             onChange={e => setPersonSearch(e.target.value)}
@@ -80,7 +80,7 @@ export default function RelationshipPicker({ value, onChange }: RelationshipPick
               outline: 'none',
               fontFamily: 'Inter, sans-serif',
               fontSize: 14,
-              color: 'var(--text-primary)',
+              color: 'var(--color-cream)',
             }}
           />
           {selectedAnchor && (
@@ -91,7 +91,7 @@ export default function RelationshipPicker({ value, onChange }: RelationshipPick
                 border: 'none',
                 background: 'none',
                 cursor: 'pointer',
-                fontSize: 11,
+                fontSize: 12,
                 color: 'var(--text-muted)',
               }}
             >
@@ -109,6 +109,7 @@ export default function RelationshipPicker({ value, onChange }: RelationshipPick
               overflow: 'hidden',
               maxHeight: 200,
               overflowY: 'auto',
+              background: 'var(--surface-1)',
             }}
           >
             {filteredPeople.map(p => (
@@ -125,11 +126,11 @@ export default function RelationshipPicker({ value, onChange }: RelationshipPick
                   width: '100%',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 10,
-                  padding: '10px 12px',
+                  gap: 12,
+                  padding: '10px 14px',
                   background: value?.anchorPersonId === p.id
-                    ? 'rgba(194, 103, 42, 0.08)'
-                    : 'white',
+                    ? 'rgba(229, 169, 60, 0.16)'
+                    : 'var(--surface-1)',
                   border: 'none',
                   borderBottom: '1px solid var(--surface-2)',
                   cursor: 'pointer',
@@ -142,13 +143,13 @@ export default function RelationshipPicker({ value, onChange }: RelationshipPick
                     width: 32,
                     height: 32,
                     borderRadius: '50%',
-                    background: 'var(--color-accent)',
+                    background: 'var(--color-amber-glow)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: 'white',
+                    color: '#12161A',
                     fontSize: 12,
-                    fontWeight: 600,
+                    fontWeight: 700,
                     fontFamily: 'Cormorant Garamond, serif',
                     flexShrink: 0,
                   }}
@@ -156,15 +157,15 @@ export default function RelationshipPicker({ value, onChange }: RelationshipPick
                   {p.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
                 </div>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-cream)' }}>
                     {p.name}
                   </div>
                   {p.profession && (
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{p.profession}</div>
+                    <div style={{ fontSize: 11, color: 'var(--color-warm-gray)' }}>{p.profession}</div>
                   )}
                 </div>
                 {value?.anchorPersonId === p.id && (
-                  <span style={{ marginLeft: 'auto', color: 'var(--color-accent)', fontSize: 16 }}>
+                  <span style={{ marginLeft: 'auto', color: 'var(--color-amber-glow)', fontSize: 16, fontWeight: 700 }}>
                     ✓
                   </span>
                 )}
@@ -182,7 +183,7 @@ export default function RelationshipPicker({ value, onChange }: RelationshipPick
               display: 'block',
               fontSize: 12,
               fontWeight: 600,
-              color: 'var(--text-secondary)',
+              color: 'var(--color-warm-gray)',
               textTransform: 'uppercase',
               letterSpacing: '0.05em',
               marginBottom: 8,
@@ -190,7 +191,7 @@ export default function RelationshipPicker({ value, onChange }: RelationshipPick
           >
             Relationship Type
           </label>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {RELATIONSHIP_TYPES.map(rt => (
               <button
                 type="button"
@@ -199,11 +200,11 @@ export default function RelationshipPicker({ value, onChange }: RelationshipPick
                   onChange({ ...value!, type: rt.value as RelationInput['type'] })
                 }
                 style={{
-                  padding: '10px 12px',
+                  padding: '12px 14px',
                   background: value?.type === rt.value
-                    ? 'rgba(194, 103, 42, 0.10)'
-                    : 'white',
-                  border: `1.5px solid ${value?.type === rt.value ? 'var(--color-accent)' : 'var(--surface-2)'}`,
+                    ? 'rgba(229, 169, 60, 0.16)'
+                    : 'var(--surface-1)',
+                  border: `1.5px solid ${value?.type === rt.value ? 'var(--color-amber-glow)' : 'var(--surface-2)'}`,
                   borderRadius: 'var(--radius-sm)',
                   cursor: 'pointer',
                   textAlign: 'left',
@@ -213,29 +214,29 @@ export default function RelationshipPicker({ value, onChange }: RelationshipPick
                 <div
                   style={{
                     fontSize: 13,
-                    fontWeight: 600,
-                    color: value?.type === rt.value ? 'var(--color-accent)' : 'var(--text-primary)',
+                    fontWeight: 700,
+                    color: value?.type === rt.value ? 'var(--color-amber-glow)' : 'var(--color-cream)',
                   }}
                 >
                   {rt.label}
                 </div>
-                <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 2 }}>
+                <div style={{ fontSize: 11, color: 'var(--color-warm-gray)', marginTop: 2 }}>
                   {rt.description}
                 </div>
               </button>
             ))}
           </div>
 
-          {/* Adopted option for PARENT/CHILD */}
+          {/* Adopted option */}
           {(value?.type === 'PARENT' || value?.type === 'CHILD') && (
             <label
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: 8,
-                marginTop: 10,
+                marginTop: 12,
                 fontSize: 13,
-                color: 'var(--text-secondary)',
+                color: 'var(--color-warm-gray)',
                 cursor: 'pointer',
               }}
             >
@@ -245,7 +246,7 @@ export default function RelationshipPicker({ value, onChange }: RelationshipPick
                 onChange={e =>
                   onChange({ ...value!, isAdopted: e.target.checked })
                 }
-                style={{ accentColor: 'var(--color-accent)' }}
+                style={{ accentColor: 'var(--color-amber-glow)' }}
               />
               Adopted / Step child
             </label>
@@ -257,12 +258,12 @@ export default function RelationshipPicker({ value, onChange }: RelationshipPick
       {!value?.anchorPersonId && (
         <div
           style={{
-            padding: '12px 14px',
+            padding: '14px 16px',
             background: 'var(--surface-1)',
             border: '1px solid var(--surface-2)',
             borderRadius: 'var(--radius-sm)',
-            fontSize: 12,
-            color: 'var(--text-secondary)',
+            fontSize: 13,
+            color: 'var(--color-warm-gray)',
             lineHeight: 1.5,
           }}
         >

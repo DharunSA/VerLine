@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { Search, X, Sparkles } from 'lucide-react';
+import { Search as SearchIcon, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore } from '../../stores/uiStore';
 
@@ -42,10 +42,11 @@ export default function SearchBar({
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
+        width: '100%',
       }}
       animate={{
         boxShadow: focused
-          ? '0 0 0 3px rgba(194, 103, 42, 0.15), var(--shadow-md)'
+          ? '0 0 0 3px rgba(229, 169, 60, 0.25), 0 4px 16px rgba(0,0,0,0.3)'
           : 'var(--shadow-sm)',
       }}
       transition={{ duration: 0.15 }}
@@ -55,17 +56,17 @@ export default function SearchBar({
           display: 'flex',
           alignItems: 'center',
           width: '100%',
-          background: 'white',
+          background: 'var(--surface-1)',
           borderRadius: 'var(--radius-lg)',
-          border: `1.5px solid ${focused ? 'var(--color-accent)' : 'var(--surface-2)'}`,
+          border: `1.5px solid ${focused ? 'var(--color-amber-glow)' : 'var(--surface-2)'}`,
           transition: 'border-color 150ms',
-          padding: '10px 16px',
-          gap: 10,
+          padding: '11px 18px',
+          gap: 12,
         }}
       >
-        <Search
+        <SearchIcon
           size={18}
-          color={focused ? 'var(--color-accent)' : 'var(--text-muted)'}
+          color={focused ? 'var(--color-amber-glow)' : 'var(--text-muted)'}
           style={{ flexShrink: 0, transition: 'color 150ms' }}
         />
         <input

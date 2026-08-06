@@ -1,4 +1,4 @@
-import { useReactFlow, Controls, MiniMap } from '@xyflow/react';
+import { useReactFlow, MiniMap } from '@xyflow/react';
 import { ZoomIn, ZoomOut, Maximize2, Map } from 'lucide-react';
 import { useState } from 'react';
 
@@ -18,11 +18,13 @@ export default function MiniControls() {
           flexDirection: 'column',
           gap: 4,
           zIndex: 10,
-          background: 'white',
+          background: 'rgba(30, 38, 47, 0.94)',
+          backdropFilter: 'blur(8px)',
           borderRadius: 'var(--radius-md)',
           border: '1px solid var(--surface-2)',
           boxShadow: 'var(--shadow-md)',
           overflow: 'hidden',
+          padding: 2,
         }}
       >
         {[
@@ -36,27 +38,28 @@ export default function MiniControls() {
             onClick={action}
             title={title}
             style={{
-              width: 36,
-              height: 36,
+              width: 38,
+              height: 38,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               border: 'none',
               background: 'none',
-              color: 'var(--text-secondary)',
+              color: 'var(--color-cream)',
               cursor: 'pointer',
-              transition: 'background 150ms, color 150ms',
+              borderRadius: 'var(--radius-sm)',
+              transition: 'all 150ms',
             }}
             onMouseEnter={e => {
-              (e.target as HTMLElement).style.background = 'var(--surface-1)';
-              (e.target as HTMLElement).style.color = 'var(--color-accent)';
+              (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)';
+              (e.currentTarget as HTMLElement).style.color = 'var(--color-amber-glow)';
             }}
             onMouseLeave={e => {
-              (e.target as HTMLElement).style.background = 'none';
-              (e.target as HTMLElement).style.color = 'var(--text-secondary)';
+              (e.currentTarget as HTMLElement).style.background = 'none';
+              (e.currentTarget as HTMLElement).style.color = 'var(--color-cream)';
             }}
           >
-            <Icon size={16} />
+            <Icon size={18} />
           </button>
         ))}
       </div>
@@ -67,10 +70,14 @@ export default function MiniControls() {
           position="bottom-right"
           nodeColor={(node) => {
             const color = (node.data as { branchColor?: string })?.branchColor;
-            return color ?? '#C2672A';
+            return color ?? 'var(--color-amber-glow)';
           }}
-          maskColor="rgba(250, 247, 242, 0.7)"
-          style={{ borderRadius: 12, border: '1px solid var(--surface-2)' }}
+          maskColor="rgba(18, 22, 26, 0.75)"
+          style={{
+            borderRadius: 12,
+            border: '1px solid var(--surface-2)',
+            background: 'var(--surface-0)',
+          }}
         />
       )}
     </>
